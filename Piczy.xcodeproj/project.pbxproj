@@ -6,7 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		42D971372DBEA016007C3136 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971362DBEA016007C3136 /* DesignSystem */; };
+		42D971392DBEA019007C3136 /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971382DBEA019007C3136 /* UIComponents */; };
+		42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D9713A2DBEA01F007C3136 /* WelcomePresentation */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		4257BDC72DBE94B100955D45 /* WelcomePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WelcomePresentation; sourceTree = "<group>"; };
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		42EFDA162DB1844B00BC9FD6 /* Piczy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Piczy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -37,15 +44,35 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */,
+				42D971392DBEA019007C3136 /* UIComponents in Frameworks */,
+				42D971372DBEA016007C3136 /* DesignSystem in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4257BDC52DBE941300955D45 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				4257BDC62DBE946300955D45 /* Welcome */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		4257BDC62DBE946300955D45 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				4257BDC72DBE94B100955D45 /* WelcomePresentation */,
+			);
+			path = Welcome;
+			sourceTree = "<group>";
+		};
 		429F22F12DB978730073AA3C /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				4257BDC52DBE941300955D45 /* Features */,
 				429F22F22DB978BE0073AA3C /* Core */,
 			);
 			path = Packages;
@@ -59,11 +86,19 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		42D971352DBEA016007C3136 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		42EFDA0D2DB1844B00BC9FD6 = {
 			isa = PBXGroup;
 			children = (
 				429F22F12DB978730073AA3C /* Packages */,
 				42EFDA182DB1844B00BC9FD6 /* Piczy */,
+				42D971352DBEA016007C3136 /* Frameworks */,
 				42EFDA172DB1844B00BC9FD6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -96,6 +131,9 @@
 			);
 			name = Piczy;
 			packageProductDependencies = (
+				42D971362DBEA016007C3136 /* DesignSystem */,
+				42D971382DBEA019007C3136 /* UIComponents */,
+				42D9713A2DBEA01F007C3136 /* WelcomePresentation */,
 			);
 			productName = Piczy;
 			productReference = 42EFDA162DB1844B00BC9FD6 /* Piczy.app */;
@@ -363,6 +401,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		42D971362DBEA016007C3136 /* DesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DesignSystem;
+		};
+		42D971382DBEA019007C3136 /* UIComponents */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UIComponents;
+		};
+		42D9713A2DBEA01F007C3136 /* WelcomePresentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WelcomePresentation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 42EFDA0E2DB1844B00BC9FD6 /* Project object */;
 }
