@@ -15,7 +15,7 @@
 		42EFDA282DB1844C00BC9FD6 /* Exceptions for "Piczy" folder in "Piczy" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 42EFDA152DB1844B00BC9FD6 /* Piczy */;
 		};
@@ -165,7 +165,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GV4VF4D45P;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Piczy/Info.plist;
+				INFOPLIST_FILE = Piczy/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -193,7 +193,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GV4VF4D45P;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Piczy/Info.plist;
+				INFOPLIST_FILE = Piczy/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
