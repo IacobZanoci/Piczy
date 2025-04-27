@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		4257BDC72DBE94B100955D45 /* WelcomePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WelcomePresentation; sourceTree = "<group>"; };
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		42EFDA162DB1844B00BC9FD6 /* Piczy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Piczy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -43,9 +44,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4257BDC52DBE941300955D45 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				4257BDC62DBE946300955D45 /* Welcome */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		4257BDC62DBE946300955D45 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				4257BDC72DBE94B100955D45 /* WelcomePresentation */,
+			);
+			path = Welcome;
+			sourceTree = "<group>";
+		};
 		429F22F12DB978730073AA3C /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				4257BDC52DBE941300955D45 /* Features */,
 				429F22F22DB978BE0073AA3C /* Core */,
 			);
 			path = Packages;
