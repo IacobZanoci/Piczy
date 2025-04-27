@@ -7,6 +7,7 @@
 
 import UIKit
 import WelcomePresentation
+import SignUpPresentation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -22,7 +23,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = makeWelcomeViewController()
+        let welcomeVC = makeWelcomeViewController()
+        let navController = UINavigationController(rootViewController: welcomeVC)
+        window?.rootViewController = navController
         window?.makeKeyAndVisible()
     }
     
@@ -30,15 +33,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func makeWelcomeViewController() -> UIViewController {
         let viewModel = WelcomeViewModel(
-            onCreateAccount: {
-                // Navigate to Create Account screen
+            onCreateAccount: { [weak self] in
+                self?.navigateToSignUp()
             },
             onLogIn: {
                 // Navigate to Log In screen
             }
         )
-        
         return WelcomeViewController(viewModel: viewModel)
+    }
+    
+    private func navigateToSignUp() {
+        let viewModel = SignUpViewModel(
+            onSignUpSuccess: {
+                print("SignUp succeeded")
+            }
+        )
+        let signUpVC = SignUpViewController(viewModel: viewModel)
+        (window?.rootViewController as? UINavigationController)?
+            .pushViewController(signUpVC, animated: true)
     }
 }
 
