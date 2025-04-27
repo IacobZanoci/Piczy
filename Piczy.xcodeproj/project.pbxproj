@@ -10,11 +10,13 @@
 		42D971372DBEA016007C3136 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971362DBEA016007C3136 /* DesignSystem */; };
 		42D971392DBEA019007C3136 /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971382DBEA019007C3136 /* UIComponents */; };
 		42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D9713A2DBEA01F007C3136 /* WelcomePresentation */; };
+		42D971582DBEC5BA007C3136 /* SignUpPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971572DBEC5BA007C3136 /* SignUpPresentation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4257BDC72DBE94B100955D45 /* WelcomePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WelcomePresentation; sourceTree = "<group>"; };
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
+		42D971562DBEC2BD007C3136 /* SignUpPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SignUpPresentation; sourceTree = "<group>"; };
 		42EFDA162DB1844B00BC9FD6 /* Piczy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Piczy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -44,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42D971582DBEC5BA007C3136 /* SignUpPresentation in Frameworks */,
 				42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */,
 				42D971392DBEA019007C3136 /* UIComponents in Frameworks */,
 				42D971372DBEA016007C3136 /* DesignSystem in Frameworks */,
@@ -56,6 +59,7 @@
 		4257BDC52DBE941300955D45 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				42D971552DBEC252007C3136 /* SignUp */,
 				4257BDC62DBE946300955D45 /* Welcome */,
 			);
 			path = Features;
@@ -91,6 +95,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		42D971552DBEC252007C3136 /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				42D971562DBEC2BD007C3136 /* SignUpPresentation */,
+			);
+			path = SignUp;
 			sourceTree = "<group>";
 		};
 		42EFDA0D2DB1844B00BC9FD6 = {
@@ -134,6 +146,7 @@
 				42D971362DBEA016007C3136 /* DesignSystem */,
 				42D971382DBEA019007C3136 /* UIComponents */,
 				42D9713A2DBEA01F007C3136 /* WelcomePresentation */,
+				42D971572DBEC5BA007C3136 /* SignUpPresentation */,
 			);
 			productName = Piczy;
 			productReference = 42EFDA162DB1844B00BC9FD6 /* Piczy.app */;
@@ -414,6 +427,10 @@
 		42D9713A2DBEA01F007C3136 /* WelcomePresentation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WelcomePresentation;
+		};
+		42D971572DBEC5BA007C3136 /* SignUpPresentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SignUpPresentation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
