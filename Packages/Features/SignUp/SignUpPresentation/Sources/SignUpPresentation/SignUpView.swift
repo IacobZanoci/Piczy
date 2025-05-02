@@ -11,16 +11,19 @@ import UIComponents
 
 final class SignUpView: UIView {
     
-    // MARK:  - Types
+    // MARK: - Types
     
     private enum Constants {
-        static let buttonHeight = 48.0
+        static let buttonHeight: CGFloat = 48.0
         static let padding: CGFloat = 50.0
     }
     
     // MARK: - Properties
     
-    private var viewModel: SignUpViewModelProtocol
+    private var onEmailTextChanged: ((String) -> Void)?
+    private var onPasswordTextChange: ((String) -> Void)?
+    private var onConfirmPasswordTextChange: ((String) -> Void)?
+    private var onSignUpButtonTapped: () -> Void
     
     // MARK: - Constraints
     
@@ -40,10 +43,10 @@ final class SignUpView: UIView {
     private lazy var emailTextField: RoundedTextField = {
         let textField = RoundedTextField()
         textField.placeholder = "Enter your email"
-        textField.error = nil
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.addTarget(self, action: #selector(emailTextChanged), for: .editingChanged)
         return textField
     }()
     
@@ -53,7 +56,8 @@ final class SignUpView: UIView {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         textField.isSecureTextEntry = true
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.addTarget(self, action: #selector(passwordTextChanged), for: .editingChanged)
         return textField
     }()
     
@@ -63,79 +67,79 @@ final class SignUpView: UIView {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         textField.isSecureTextEntry = true
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.addTarget(self, action: #selector(confirmPasswordTextChanged), for: .editingChanged)
         return textField
     }()
     
-    private lazy var createAccountButton: PrimaryButton = {
+    private lazy var signUpButton: PrimaryButton = {
         let button = PrimaryButton()
-        button.setTitle("Create Account", for: .normal)
-        button.addTarget(self, action: #selector(createAccountAction), for: .touchUpInside)
+        button.setTitle("Create account", for: .normal)
         button.isEnabled = false
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(signUpButtonTapped), for: .touchUpInside)
         return button
     }()
     
-    private lazy var buttonStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.backgroundColor = .Piczy.background
-        stackView.axis = .vertical
-        stackView.spacing = .extraLarge
-        stackView.alignment = .fill
-        return stackView
+    private lazy var stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.spacing = .extraLarge
+        stack.alignment = .fill
+        return stack
     }()
     
     // MARK: - Actions
     
-    /// Handles changes in text fields to validate form input.
-    @objc private func textFieldDidChange() {
-        viewModel.email = emailTextField.text ?? ""
-        viewModel.password = passwordTextField.text ?? ""
-        viewModel.confirmPassword = confirmPasswordTextField.text ?? ""
-        
-        createAccountButton.isEnabled = viewModel.validateCredentials()
+    @objc private func emailTextChanged(sender: UITextField) {
+        onEmailTextChanged?(sender.text ?? "")
     }
     
-    @objc private func createAccountAction() {
-        viewModel.email = emailTextField.text ?? ""
-        viewModel.password = passwordTextField.text ?? ""
-        viewModel.confirmPassword = confirmPasswordTextField.text ?? ""
-        
-        // Email Validation
-        if !viewModel.isValidEmail(viewModel.email) {
-            emailTextField.error = "Invalid email"
-            return
-        } else {
-            emailTextField.error = nil
-        }
-        
-        // Password Validation
-        if !viewModel.isValidPassword(viewModel.password) {
-            passwordTextField.error = "Invalid password"
-            return
-        } else {
-            passwordTextField.error = nil
-        }
-        
-        // Confirm Password Validation
-        if viewModel.password != viewModel.confirmPassword {
-            confirmPasswordTextField.error = "Passwords do not match"
-            return
-        } else {
-            confirmPasswordTextField.error = nil
-        }
-        
-        // Further logic for the user signUp
-        print("Success")
-        viewModel.onSignUpSuccess?()
+    @objc private func passwordTextChanged(sender: UITextField) {
+        onPasswordTextChange?(sender.text ?? "")
+    }
+    
+    @objc private func confirmPasswordTextChanged(sender: UITextField) {
+        onConfirmPasswordTextChange?(sender.text ?? "")
+    }
+    
+    @objc private func signUpButtonTapped() {
+        onSignUpButtonTapped()
+    }
+    
+    // MARK: - Events
+    
+    func showEmailError(_ message: String?) {
+        emailTextField.error = message
+    }
+    
+    func showPasswordError(_ message: String?) {
+        passwordTextField.error = message
+    }
+    
+    func showConfirmPasswordError(_ message: String?) {
+        confirmPasswordTextField.error = message
+    }
+    
+    func enableSignUpButton(isEnable: Bool) {
+        signUpButton.isEnabled = isEnable
     }
     
     // MARK: - Initializers
     
-    init(viewModel: SignUpViewModelProtocol) {
-        self.viewModel = viewModel
+    init(
+        onEmailTextChanged: ((String) -> Void)?,
+        onPasswordTextChange: ((String) -> Void)?,
+        onConfirmPasswordTextChange: ((String) -> Void)?,
+        onSignUpButtonTapped: @escaping () -> Void
+    ) {
+        self.onEmailTextChanged = onEmailTextChanged
+        self.onPasswordTextChange = onPasswordTextChange
+        self.onConfirmPasswordTextChange = onConfirmPasswordTextChange
+        self.onSignUpButtonTapped = onSignUpButtonTapped
         super.init(frame: .zero)
-        setupLayout()
+        setupViewLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -147,35 +151,31 @@ final class SignUpView: UIView {
 
 extension SignUpView {
     
-    private func setupLayout() {
+    private func setupViewLayout() {
         backgroundColor = .Piczy.background
-        setupButtonStackView()
+        setupStackView()
     }
     
-    private func setupButtonStackView() {
-        buttonStackView.addArrangedSubview(titleLabel)
-        buttonStackView.addArrangedSubview(emailTextField)
-        buttonStackView.addArrangedSubview(passwordTextField)
-        buttonStackView.addArrangedSubview(confirmPasswordTextField)
-        buttonStackView.addArrangedSubview(createAccountButton)
-        
-        // Add stack view to the main view
-        addSubview(buttonStackView)
-        
-        buttonStackView.setContentHuggingPriority(.required, for: .vertical)
-        buttonStackView.setContentCompressionResistancePriority(.required, for: .vertical)
+    private func setupStackView() {
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(emailTextField)
+        stackView.addArrangedSubview(passwordTextField)
+        stackView.addArrangedSubview(confirmPasswordTextField)
+        stackView.addArrangedSubview(signUpButton)
+        addSubview(stackView)
         
         emailTextField.heightAnchor.constraint(equalToConstant: .extraLarge).isActive = true
         passwordTextField.heightAnchor.constraint(equalToConstant: .extraLarge).isActive = true
         confirmPasswordTextField.heightAnchor.constraint(equalToConstant: .extraLarge).isActive = true
         
-        NSLayoutConstraint.activate([
-            createAccountButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
-            buttonStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.padding),
-            buttonStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.padding)
-        ])
+        let constraints = [
+            signUpButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.padding),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.padding)
+        ]
+        NSLayoutConstraint.activate(constraints)
         
-        centerYConstraint = buttonStackView.centerYAnchor.constraint(equalTo: centerYAnchor)
+        centerYConstraint = stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         centerYConstraint?.isActive = true
     }
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import DesignSystem
+import UIComponents
 
 public final class SignUpViewController: UIViewController {
     
@@ -17,19 +18,31 @@ public final class SignUpViewController: UIViewController {
     // MARK: - Views
     
     private lazy var signUpView: SignUpView = {
-        let view = SignUpView(viewModel: viewModel)
-        view.translatesAutoresizingMaskIntoConstraints = false
+        let view = SignUpView(
+            onEmailTextChanged: { [weak self] email in
+                self?.viewModel.onEmailChanged(to: email)
+            },
+            onPasswordTextChange: { [weak self] password in
+                self?.viewModel.onPasswordChanged(to: password)
+            },
+            onConfirmPasswordTextChange: { [weak self] confirmPassword in
+                self?.viewModel.onConfirmPasswordChanged(to: confirmPassword)
+            },
+            onSignUpButtonTapped: { [weak self] in
+                self?.viewModel.onSignUp()
+            }
+        )
         return view
     }()
     
-    // MARK: - Initialization
+    // MARK: - Initializers
     
     public init(viewModel: SignUpViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -38,27 +51,30 @@ public final class SignUpViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        setupKeyboardNotifications()
+        bindViewModel()
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
+    // MARK: - Layout Setup
     
     private func setupLayout() {
         view.backgroundColor = .Piczy.background
+        signUpView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(signUpView)
         
-        NSLayoutConstraint.activate([
+        let constraints = [
             signUpView.topAnchor.constraint(equalTo: view.topAnchor),
             signUpView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             signUpView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             signUpView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        setupKeyboardNotifications()
     }
     
     // MARK: - Keyboard Handling
     
+    /// Observers keyboard appearance. Adjust the layout dynamically.
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(
             self,
@@ -68,6 +84,7 @@ public final class SignUpViewController: UIViewController {
         )
     }
     
+    /// Animates layout changes when the keyboard appears or disappears.
     @objc private func keyboardWillChangeFrame(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
               let endFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
@@ -95,17 +112,53 @@ public final class SignUpViewController: UIViewController {
             completion: nil
         )
     }
+    
+    /// Conects ViewModel outputs to View's display logic.
+    private func bindViewModel() {
+        viewModel.onEmailErrorChanged = { [weak self] errorMessage in
+            self?.signUpView.showEmailError(errorMessage)
+        }
+        
+        viewModel.onPasswordErrorChanged = { [weak self] errorMessage in
+            self?.signUpView.showPasswordError(errorMessage)
+        }
+        
+        viewModel.onConfirmPasswordErrorChanged = { [weak self] errorMessage in
+            self?.signUpView.showConfirmPasswordError(errorMessage)
+        }
+        
+        viewModel.onSignUpButtonEnabled = { [weak self] isEnable in
+            self?.signUpView.enableSignUpButton(isEnable: isEnable)
+        }
+    }
 }
 
-private struct ViewModelFixture: SignUpViewModelProtocol {
-    var email: String = ""
-    var password: String = ""
-    var confirmPassword: String = ""
-    var onSignUpSuccess: (() -> Void)?
+// MARK: - Preview
+
+private final class ViewModelFixture: SignUpViewModelProtocol {
+    var onEmailErrorChanged: ((String?) -> Void)?
     
-    func validateCredentials() -> Bool { true }
-    func isValidEmail(_ email: String) -> Bool { true }
-    func isValidPassword(_ password: String) -> Bool { true }
+    var onPasswordErrorChanged: ((String?) -> Void)?
+    
+    var onConfirmPasswordErrorChanged: ((String?) -> Void)?
+    
+    var onSignUpButtonEnabled: ((Bool) -> Void)?
+    
+    func onEmailChanged(to email: String) {
+        onEmailErrorChanged?(email.contains("@") ? nil : "Invalid email")
+    }
+    
+    func onPasswordChanged(to password: String) {
+        onPasswordErrorChanged?(password.count >= 6 ? nil : "Password too short")
+    }
+    
+    func onConfirmPasswordChanged(to confirmPassword: String) {
+        onConfirmPasswordErrorChanged?(confirmPassword == "password" ? nil : "Passwords do not match")
+    }
+    
+    func onSignUp() {
+        print("Success")
+    }
 }
 
 #Preview {

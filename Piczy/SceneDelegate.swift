@@ -46,8 +46,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func navigateToSignUp() {
         let viewModel = SignUpViewModel(
-            onSignUpSuccess: {
-                print("SignUp succeeded")
+            onSignUp: {
+                print("success")
             }
         )
         let signUpVC = SignUpViewController(viewModel: viewModel)
