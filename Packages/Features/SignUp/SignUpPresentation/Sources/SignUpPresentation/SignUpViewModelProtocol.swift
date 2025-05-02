@@ -7,19 +7,24 @@
 
 import Foundation
 
+@MainActor
 public protocol SignUpViewModelProtocol {
     
     // MARK: - Properties
     
-    var email: String { get set }
-    var password: String { get set }
-    var confirmPassword: String { get set }
-    
-    var onSignUpSuccess: (() -> Void)? { get set }
+    var onEmailErrorChanged: ((String?) -> Void)? { get set }
+    var onPasswordErrorChanged: ((String?) -> Void)? { get set }
+    var onConfirmPasswordErrorChanged: ((String?) -> Void)? { get set }
+    var onSignUpButtonEnabled: ((Bool) -> Void)? { get set }
     
     // MARK: - Methods
     
-    func validateCredentials() -> Bool
-    func isValidEmail(_ email: String) -> Bool
-    func isValidPassword(_ password: String) -> Bool
+    func onEmailChanged(to email: String)
+    func onPasswordChanged(to password: String)
+    func onConfirmPasswordChanged(to confirmPassword: String)
+    
+    // MARK: - Events
+    
+    /// Event triggered when the user wants to sign up.
+    func onSignUp()
 }

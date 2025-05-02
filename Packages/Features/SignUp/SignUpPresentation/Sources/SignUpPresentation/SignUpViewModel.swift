@@ -7,38 +7,109 @@
 
 import Foundation
 
+@Observable
 public final class SignUpViewModel: SignUpViewModelProtocol {
     
     // MARK: - Properties
     
-    public var email: String = ""
-    public var password: String = ""
-    public var confirmPassword: String = ""
+    private let emailPredicate = NSPredicate(format: "SELF MATCHES %@", "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+    private let onSignUpAction: () -> Void
+    public var onEmailErrorChanged: ((String?) -> Void)?
+    public var onPasswordErrorChanged: ((String?) -> Void)?
+    public var onConfirmPasswordErrorChanged: ((String?) -> Void)?
+    public var onSignUpButtonEnabled: ((Bool) -> Void)?
     
-    public var onSignUpSuccess: (() -> Void)?
-    
-    // MARK: - Initialization
-    
-    public init(onSignUpSuccess: (() -> Void)? = nil) {
-        self.onSignUpSuccess = onSignUpSuccess
+    public var email: String = "" {
+        didSet {
+            validateEmail()
+            updateSignUpButtonState()
+        }
     }
     
-    // MARK: - Validation Methods
-    
-    public func validateCredentials() -> Bool {
-        return isValidEmail(email) &&
-        !password.isEmpty &&
-        password == confirmPassword
+    public var password: String = "" {
+        didSet {
+            validatePassword()
+            updateSignUpButtonState()
+        }
     }
     
-    public func isValidEmail(_ email: String) -> Bool {
-        let pattern = #"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
-        let isValidFormat = email.range(of: pattern, options: .regularExpression) != nil
-        return isValidFormat && email.count >= 5
+    public var confirmPassword: String = "" {
+        didSet {
+            validateConfirmPassword()
+            updateSignUpButtonState()
+        }
     }
     
-    public func isValidPassword(_ password: String) -> Bool {
-        let isValidPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
-        return isValidPassword.count >= 5
+    // MARK: - Initializers
+    
+    public init(
+        onSignUp: @escaping () -> Void
+    ) {
+        onSignUpAction = onSignUp
+    }
+    
+    // MARK: - Validation
+    
+    private func validateEmail() {
+        if email.isEmpty || isEmailValid() {
+            onEmailErrorChanged?(nil)
+        } else {
+            onEmailErrorChanged?("Email is not valid")
+        }
+    }
+    
+    private func validatePassword() {
+        if isPasswordValid() {
+            onPasswordErrorChanged?(nil)
+        } else {
+            onPasswordErrorChanged?("Password is not valid")
+        }
+    }
+    
+    private func validateConfirmPassword() {
+        if isConfirmPasswordValid() {
+            onConfirmPasswordErrorChanged?(nil)
+        } else {
+            onConfirmPasswordErrorChanged?("Passwords do not match")
+        }
+    }
+    
+    private func updateSignUpButtonState() {
+        let isButtonEnabled =
+        isEmailValid() &&
+        isPasswordValid() &&
+        isConfirmPasswordValid()
+        
+        onSignUpButtonEnabled?(isButtonEnabled)
+    }
+    
+    private func isEmailValid() -> Bool {
+        return emailPredicate.evaluate(with: email)
+    }
+    
+    private func isPasswordValid() -> Bool {
+        return password.count > 5
+    }
+    
+    private func isConfirmPasswordValid() -> Bool {
+        return confirmPassword == password
+    }
+    
+    // MARK: - Events
+    
+    public func onEmailChanged(to email: String) {
+        self.email = email
+    }
+    
+    public func onPasswordChanged(to password: String) {
+        self.password = password
+    }
+    
+    public func onConfirmPasswordChanged(to confirmPassword: String) {
+        self.confirmPassword = confirmPassword
+    }
+    
+    public func onSignUp() {
+        onSignUpAction()
     }
 }
