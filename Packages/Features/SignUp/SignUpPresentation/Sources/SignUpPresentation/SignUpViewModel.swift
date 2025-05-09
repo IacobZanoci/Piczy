@@ -6,34 +6,38 @@
 //
 
 import Foundation
+import CredentialsValidator
 
 @Observable
 public final class SignUpViewModel: SignUpViewModelProtocol {
     
+    // MARK: - Dependences
+    
+    private let credentialsValidator: CredentialsValidatorProtocol
+    
     // MARK: - Properties
     
-    private let emailPredicate = NSPredicate(format: "SELF MATCHES %@", "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     private let onSignUpAction: () -> Void
     public var onEmailErrorChanged: ((String?) -> Void)?
     public var onPasswordErrorChanged: ((String?) -> Void)?
     public var onConfirmPasswordErrorChanged: ((String?) -> Void)?
     public var onSignUpButtonEnabled: ((Bool) -> Void)?
     
-    public var email: String = "" {
+    private var email: String = "" {
         didSet {
             validateEmail()
             updateSignUpButtonState()
         }
     }
     
-    public var password: String = "" {
+    private var password: String = "" {
         didSet {
             validatePassword()
             updateSignUpButtonState()
         }
     }
     
-    public var confirmPassword: String = "" {
+    private var confirmPassword: String = "" {
         didSet {
             validateConfirmPassword()
             updateSignUpButtonState()
@@ -43,15 +47,17 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     // MARK: - Initializers
     
     public init(
-        onSignUp: @escaping () -> Void
+        onSignUp: @escaping () -> Void,
+        credentialsValidator: CredentialsValidatorProtocol
     ) {
         onSignUpAction = onSignUp
+        self.credentialsValidator = credentialsValidator
     }
     
     // MARK: - Validation
     
     private func validateEmail() {
-        if email.isEmpty || isEmailValid() {
+        if (email.isEmpty) || (credentialsValidator.isEmailValid(email)) {
             onEmailErrorChanged?(nil)
         } else {
             onEmailErrorChanged?("Email is not valid")
@@ -59,7 +65,7 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     }
     
     private func validatePassword() {
-        if isPasswordValid() {
+        if (password.isEmpty) || (credentialsValidator.isPasswordValid(password)) {
             onPasswordErrorChanged?(nil)
         } else {
             onPasswordErrorChanged?("Password is not valid")
@@ -67,7 +73,8 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     }
     
     private func validateConfirmPassword() {
-        if isConfirmPasswordValid() {
+        if (confirmPassword.isEmpty) || (credentialsValidator.isConfirmPasswordValid(password: password,
+                                                                                     confirmPassword: confirmPassword)) {
             onConfirmPasswordErrorChanged?(nil)
         } else {
             onConfirmPasswordErrorChanged?("Passwords do not match")
@@ -76,23 +83,11 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     
     private func updateSignUpButtonState() {
         let isButtonEnabled =
-        isEmailValid() &&
-        isPasswordValid() &&
-        isConfirmPasswordValid()
+        credentialsValidator.isEmailValid(email) &&
+        credentialsValidator.isPasswordValid(password) &&
+        credentialsValidator.isConfirmPasswordValid(password: password, confirmPassword: confirmPassword)
         
         onSignUpButtonEnabled?(isButtonEnabled)
-    }
-    
-    private func isEmailValid() -> Bool {
-        return emailPredicate.evaluate(with: email)
-    }
-    
-    private func isPasswordValid() -> Bool {
-        return password.count > 5
-    }
-    
-    private func isConfirmPasswordValid() -> Bool {
-        return confirmPassword == password
     }
     
     // MARK: - Events

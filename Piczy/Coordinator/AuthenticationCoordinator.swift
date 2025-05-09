@@ -61,7 +61,8 @@ extension AuthenticationCoordinator {
         let viewModel = SignUpViewModel(
             onSignUp: {
                 print("SignUp succeeded")
-            }
+            },
+            credentialsValidator: CredentialsValidator()
         )
         return SignUpViewController(viewModel: viewModel)
     }
