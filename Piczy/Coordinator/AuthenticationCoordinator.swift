@@ -5,18 +5,21 @@
 //  Created by Iacob Zanoci on 09.05.2025.
 //
 
-import Foundation
 import UIKit
 import WelcomePresentation
 import LoginPresentation
 import SignUpPresentation
-import CredentialsValidator
 
 final class AuthenticationCoordinator: CoordinatorProtocol {
     var navigationController: UINavigationController
+    let dependencyContainer: DependencyContainer
     
-    init(_ navigationController: UINavigationController) {
+    init(
+        _ navigationController: UINavigationController,
+        dependencyContainer: DependencyContainer
+    ) {
         self.navigationController = navigationController
+        self.dependencyContainer = dependencyContainer
     }
     
     func start() {
@@ -52,7 +55,7 @@ extension AuthenticationCoordinator {
             onCreateAccount: { [weak self] in
                 self?.goToSignUp()
             },
-            credentialsValidator: CredentialsValidator()
+            credentialsValidator: dependencyContainer.credentialsValidator
         )
         return LoginViewController(viewModel: viewModel)
     }
@@ -62,7 +65,7 @@ extension AuthenticationCoordinator {
             onSignUp: {
                 print("SignUp succeeded")
             },
-            credentialsValidator: CredentialsValidator()
+            credentialsValidator: dependencyContainer.credentialsValidator
         )
         return SignUpViewController(viewModel: viewModel)
     }
