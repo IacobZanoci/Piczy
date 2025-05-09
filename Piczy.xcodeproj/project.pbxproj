@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4221F0D52DCE33F80098023E /* NetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 4221F0D42DCE33F80098023E /* NetworkClient */; };
+		4221F1062DCE98F20098023E /* LoginDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 4221F1052DCE98F20098023E /* LoginDomain */; };
 		42D971372DBEA016007C3136 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971362DBEA016007C3136 /* DesignSystem */; };
 		42D971392DBEA019007C3136 /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971382DBEA019007C3136 /* UIComponents */; };
 		42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D9713A2DBEA01F007C3136 /* WelcomePresentation */; };
@@ -18,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		4221F0D32DCE33C80098023E /* NetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkClient; sourceTree = "<group>"; };
+		4221F1042DCE98D90098023E /* LoginDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoginDomain; sourceTree = "<group>"; };
 		4257BDC72DBE94B100955D45 /* WelcomePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WelcomePresentation; sourceTree = "<group>"; };
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		42D971562DBEC2BD007C3136 /* SignUpPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SignUpPresentation; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 				42D971582DBEC5BA007C3136 /* SignUpPresentation in Frameworks */,
 				42D971742DBECD2D007C3136 /* LoginPresentation in Frameworks */,
 				42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */,
+				4221F1062DCE98F20098023E /* LoginDomain in Frameworks */,
 				42D971392DBEA019007C3136 /* UIComponents in Frameworks */,
 				42D9718F2DCE26A6007C3136 /* CredentialsValidator in Frameworks */,
 				42D971372DBEA016007C3136 /* DesignSystem in Frameworks */,
@@ -120,6 +123,7 @@
 		42D971712DBECB9A007C3136 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				4221F1042DCE98D90098023E /* LoginDomain */,
 				42D971722DBECBC7007C3136 /* LoginPresentation */,
 			);
 			path = Login;
@@ -170,6 +174,7 @@
 				42D971732DBECD2D007C3136 /* LoginPresentation */,
 				42D9718E2DCE26A6007C3136 /* CredentialsValidator */,
 				4221F0D42DCE33F80098023E /* NetworkClient */,
+				4221F1052DCE98F20098023E /* LoginDomain */,
 			);
 			productName = Piczy;
 			productReference = 42EFDA162DB1844B00BC9FD6 /* Piczy.app */;
@@ -442,6 +447,10 @@
 		4221F0D42DCE33F80098023E /* NetworkClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = NetworkClient;
+		};
+		4221F1052DCE98F20098023E /* LoginDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LoginDomain;
 		};
 		42D971362DBEA016007C3136 /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;

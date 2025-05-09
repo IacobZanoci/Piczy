@@ -55,7 +55,8 @@ extension AuthenticationCoordinator {
             onCreateAccount: { [weak self] in
                 self?.goToSignUp()
             },
-            credentialsValidator: dependencyContainer.credentialsValidator
+            credentialsValidator: dependencyContainer.credentialsValidator,
+            loginService: dependencyContainer.loginService
         )
         return LoginViewController(viewModel: viewModel)
     }

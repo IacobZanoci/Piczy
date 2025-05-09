@@ -12,14 +12,17 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../../Core/DesignSystem")
+        .package(path: "../../Core/DesignSystem"),
+        .package(path: "../../Core/CredentialsValidator"),
+        .package(path: "../NetworkClient")
     ],
     targets: [
         .target(
             name: "LoginPresentation",
             dependencies: [
                 .product(name: "DesignSystem", package: "DesignSystem"),
-                .product(name: "UIComponents", package: "DesignSystem")
+                .product(name: "UIComponents", package: "DesignSystem"),
+                "CredentialsValidator", "NetworkClient"
             ],
             resources: [
                 .process("Resources")
@@ -27,7 +30,11 @@ let package = Package(
         ),
         .testTarget(
             name: "LoginPresentationTests",
-            dependencies: ["LoginPresentation"]
-        ),
+            dependencies: [
+                "LoginPresentation",
+                "CredentialsValidator" ,
+                "NetworkClient"
+            ]
+        )
     ]
 )

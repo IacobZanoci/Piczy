@@ -15,6 +15,11 @@ public protocol LoginViewModelProtocol {
     var onEmailErrorChanged: ((String?) -> Void)? { get set }
     var onPasswordErrorChanged: ((String?) -> Void)? { get set }
     var onLoginButtonEnabled: ((Bool) -> Void)? { get set }
+    var onErrorCredentials: ((String?) -> Void)? { get set }
+    var onLoadingStateChange: ((Bool) -> Void)? { get set }
+    var onLoginAction: () -> Void { get set }
+    var onForgotPasswordAction: () -> Void { get set }
+    var onCreateAccountAction: () -> Void { get set }
     
     func onEmailChanged(to email: String)
     
