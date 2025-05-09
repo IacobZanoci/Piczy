@@ -12,6 +12,7 @@
 		42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D9713A2DBEA01F007C3136 /* WelcomePresentation */; };
 		42D971582DBEC5BA007C3136 /* SignUpPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971572DBEC5BA007C3136 /* SignUpPresentation */; };
 		42D971742DBECD2D007C3136 /* LoginPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971732DBECD2D007C3136 /* LoginPresentation */; };
+		42D9718F2DCE26A6007C3136 /* CredentialsValidator in Frameworks */ = {isa = PBXBuildFile; productRef = 42D9718E2DCE26A6007C3136 /* CredentialsValidator */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 				42D971742DBECD2D007C3136 /* LoginPresentation in Frameworks */,
 				42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */,
 				42D971392DBEA019007C3136 /* UIComponents in Frameworks */,
+				42D9718F2DCE26A6007C3136 /* CredentialsValidator in Frameworks */,
 				42D971372DBEA016007C3136 /* DesignSystem in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,6 +164,7 @@
 				42D9713A2DBEA01F007C3136 /* WelcomePresentation */,
 				42D971572DBEC5BA007C3136 /* SignUpPresentation */,
 				42D971732DBECD2D007C3136 /* LoginPresentation */,
+				42D9718E2DCE26A6007C3136 /* CredentialsValidator */,
 			);
 			productName = Piczy;
 			productReference = 42EFDA162DB1844B00BC9FD6 /* Piczy.app */;
@@ -450,6 +453,10 @@
 		42D971732DBECD2D007C3136 /* LoginPresentation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LoginPresentation;
+		};
+		42D9718E2DCE26A6007C3136 /* CredentialsValidator */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CredentialsValidator;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
