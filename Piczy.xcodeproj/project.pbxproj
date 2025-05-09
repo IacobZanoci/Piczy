@@ -19,6 +19,7 @@
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		42D971562DBEC2BD007C3136 /* SignUpPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SignUpPresentation; sourceTree = "<group>"; };
 		42D971722DBECBC7007C3136 /* LoginPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoginPresentation; sourceTree = "<group>"; };
+		42D9718D2DCBFF25007C3136 /* CredentialsValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CredentialsValidator; sourceTree = "<group>"; };
 		42EFDA162DB1844B00BC9FD6 /* Piczy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Piczy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -89,6 +90,7 @@
 		429F22F22DB978BE0073AA3C /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				42D9718D2DCBFF25007C3136 /* CredentialsValidator */,
 				429F22F32DB978FB0073AA3C /* DesignSystem */,
 			);
 			path = Core;
