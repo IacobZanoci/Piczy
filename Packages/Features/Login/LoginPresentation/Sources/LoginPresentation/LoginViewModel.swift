@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import CredentialsValidator
 
 @Observable
 public final class LoginViewModel: LoginViewModelProtocol {
     
     // MARK: - Properties
     
-    private let emailPredicate = NSPredicate(format: "SELF MATCHES %@", "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+    private let credentialsValidator: CredentialsValidatorProtocol
     private let onLoginAction: () -> Void
     private let onForgotPasswordAction: () -> Void
     private let onCreateAccountAction: () -> Void
@@ -20,14 +21,14 @@ public final class LoginViewModel: LoginViewModelProtocol {
     public var onPasswordErrorChanged: ((String?) -> Void)?
     public var onLoginButtonEnabled: ((Bool) -> Void)?
     
-    public var email: String = "" {
+    private var email: String = "" {
         didSet {
             validateEmail()
             updateLoginButtonState()
         }
     }
     
-    public var password: String = "" {
+    private var password: String = "" {
         didSet {
             validatePassword()
             updateLoginButtonState()
@@ -39,42 +40,38 @@ public final class LoginViewModel: LoginViewModelProtocol {
     public init(
         onLogin: @escaping () -> Void,
         onForgotPassword: @escaping () -> Void,
-        onCreateAccount: @escaping () -> Void
+        onCreateAccount: @escaping () -> Void,
+        credentialsValidator: CredentialsValidatorProtocol
     ){
         onLoginAction = onLogin
         onForgotPasswordAction = onForgotPassword
         onCreateAccountAction = onCreateAccount
+        self.credentialsValidator = credentialsValidator
     }
     
     // MARK: - Validation
     
-    public func validateEmail() {
-        if email.isEmpty || isEmailValid() {
+    private func validateEmail() {
+        let hideEmailError = email.isEmpty || credentialsValidator.isEmailValid(email)
+        
+        if hideEmailError {
             onEmailErrorChanged?(nil)
         } else {
             onEmailErrorChanged?("The email entered isn't valid.")
         }
     }
     
-    public func validatePassword() {
-        if isPasswordValid() {
+    private func validatePassword() {
+        if credentialsValidator.isPasswordValid(password) {
             onPasswordErrorChanged?(nil)
         } else {
             onPasswordErrorChanged?("Password is too short.")
         }
     }
     
-    public func updateLoginButtonState() {
-        let isButtonEnabled = isEmailValid() && isPasswordValid()
+    private func updateLoginButtonState() {
+        let isButtonEnabled = credentialsValidator.isEmailValid(email) && credentialsValidator.isPasswordValid(password)
         onLoginButtonEnabled?(isButtonEnabled)
-    }
-    
-    private func isEmailValid() -> Bool {
-        return emailPredicate.evaluate(with: email)
-    }
-    
-    private func isPasswordValid() -> Bool {
-        return password.count > 5
     }
     
     // MARK: - Events
