@@ -42,4 +42,12 @@ final class CredentialsValidatorTests: XCTestCase {
     func test_givenInvalidPasswordShorterThanMinimumNumberOfCharactersOfSix_whenValidate_thenReturnFalse() {
         XCTAssertFalse(sut.isPasswordValid("12345"))
     }
+    
+    func test_givenMatchingPasswordAndConfirmPassword_whenValidate_thenReturnTrue() {
+        XCTAssertTrue(sut.isConfirmPasswordValid(password: "password", confirmPassword: "password"))
+    }
+    
+    func test_givenNotMatchingPasswordAndConfirmPassword_whenValidate_thenReturnFalse() {
+        XCTAssertFalse(sut.isConfirmPasswordValid(password: "password", confirmPassword: "drowssap"))
+    }
 }
