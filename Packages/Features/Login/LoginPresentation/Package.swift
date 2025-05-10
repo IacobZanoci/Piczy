@@ -14,7 +14,8 @@ let package = Package(
     dependencies: [
         .package(path: "../../Core/DesignSystem"),
         .package(path: "../../Core/CredentialsValidator"),
-        .package(path: "../NetworkClient")
+        .package(path: "../NetworkClient"),
+        .package(path: "../LoginDomain")
     ],
     targets: [
         .target(
@@ -32,6 +33,7 @@ let package = Package(
             name: "LoginPresentationTests",
             dependencies: [
                 "LoginPresentation",
+                "LoginDomain",
                 "CredentialsValidator" ,
                 "NetworkClient"
             ]
