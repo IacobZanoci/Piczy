@@ -91,12 +91,12 @@ public final class NetworkClient: NetworkClientProtocol {
                          completion: @escaping @Sendable (Result<Data, NetworkError>) -> Void
     ) {
         urlSession.dataTask(with: request) { data, response, error in
-            if let error = error {
-                return completion(.failure(.unknown(error)))
+            if error != nil {
+                return completion(.failure(.unknown))
             }
             
             guard let httpResponse = response as? HTTPURLResponse else {
-                return completion(.failure(.unknown(URLError(.badServerResponse))))
+                return completion(.failure(.serverError(statusCode: 404)))
             }
             
             guard (200...299).contains(httpResponse.statusCode) else {

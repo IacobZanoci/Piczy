@@ -5,9 +5,10 @@
 //  Created by Iacob Zanoci on 09.05.2025.
 //
 
-import LoginDomain
-import NetworkClient
 import CredentialsValidator
+import NetworkClient
+import LoginDomain
+import SignUpDomain
 
 @MainActor
 final class DependencyContainer {
@@ -20,6 +21,9 @@ final class DependencyContainer {
     /// Shared instance of `NetworkClient` used for API requests.
     lazy var networkClient = NetworkClient()
     
-    /// Shared instance of `MockLoginService` used for mocking network requests.
+    /// Shared instance of `MockLoginService` used for mocking LogIn network requests.
     lazy var loginService = MockLoginService(networkClient: networkClient)
+    
+    /// Shared instance of `MockSignUpService` used for mocking SignUp network requests.
+    lazy var signUpService = MockSignUpService(networkClient: networkClient)
 }
