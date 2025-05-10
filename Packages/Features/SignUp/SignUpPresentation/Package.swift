@@ -32,7 +32,7 @@ let package = Package(
             dependencies: [
                 "SignUpPresentation",
                 "SignUpDomain",
-                "CredentialsValidator" ,
+                "CredentialsValidator",
                 "NetworkClient"
             ]
         )
