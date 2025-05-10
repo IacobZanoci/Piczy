@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SignUpDomain
 import CredentialsValidator
 
 @Observable
@@ -14,6 +15,7 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     // MARK: - Dependences
     
     private let credentialsValidator: CredentialsValidatorProtocol
+    private let signUpService: SignUpServiceProtocol
     
     // MARK: - Properties
     
@@ -48,10 +50,12 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     
     public init(
         onSignUp: @escaping () -> Void,
-        credentialsValidator: CredentialsValidatorProtocol
+        credentialsValidator: CredentialsValidatorProtocol,
+        signUpService: SignUpServiceProtocol
     ) {
         onSignUpAction = onSignUp
         self.credentialsValidator = credentialsValidator
+        self.signUpService = signUpService
     }
     
     // MARK: - Validation
@@ -105,6 +109,40 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     }
     
     public func onSignUp() {
-        onSignUpAction()
+        let request = SignUpRequest(
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword
+        )
+        
+        signUpService.signUp(request: request) { [weak self] result in
+            
+            let errorMessage: String?
+            let token: String?
+            
+            switch result {
+            case .success(let response):
+                token = response.token
+                errorMessage = nil
+            case .failure(let error):
+                token = nil
+                switch error {
+                case .emailAlreadyExists:
+                    errorMessage = "Email already in use"
+                default:
+                    errorMessage = "Unknown error"
+                }
+            }
+            
+            DispatchQueue.main.async {
+                if let token = token {
+                    print("Signed Up with token: \(token)")
+                    self?.onEmailErrorChanged?(nil)
+                    self?.onSignUpAction()
+                } else if let message = errorMessage {
+                    self?.onEmailErrorChanged?(message)
+                }
+            }
+        }
     }
 }
