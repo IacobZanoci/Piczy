@@ -7,19 +7,26 @@
 
 import Foundation
 import CredentialsValidator
+import LoginDomain
 
 @Observable
 public final class LoginViewModel: LoginViewModelProtocol {
     
-    // MARK: - Properties
+    // MARK: - Dependences
     
     private let credentialsValidator: CredentialsValidatorProtocol
-    private let onLoginAction: () -> Void
-    private let onForgotPasswordAction: () -> Void
-    private let onCreateAccountAction: () -> Void
+    private let loginService: LoginServiceProtocol
+    
+    // MARK: - Properties
+    
+    public var onForgotPasswordAction: () -> Void
+    public var onCreateAccountAction: () -> Void
+    public var onLoginAction: () -> Void
     public var onEmailErrorChanged: ((String?) -> Void)?
     public var onPasswordErrorChanged: ((String?) -> Void)?
     public var onLoginButtonEnabled: ((Bool) -> Void)?
+    public var onErrorCredentials: ((String?) -> Void)?
+    public var onLoadingStateChange: ((Bool) -> Void)?
     
     private var email: String = "" {
         didSet {
@@ -41,17 +48,20 @@ public final class LoginViewModel: LoginViewModelProtocol {
         onLogin: @escaping () -> Void,
         onForgotPassword: @escaping () -> Void,
         onCreateAccount: @escaping () -> Void,
-        credentialsValidator: CredentialsValidatorProtocol
+        credentialsValidator: CredentialsValidatorProtocol,
+        loginService: LoginServiceProtocol
     ){
         onLoginAction = onLogin
         onForgotPasswordAction = onForgotPassword
         onCreateAccountAction = onCreateAccount
         self.credentialsValidator = credentialsValidator
+        self.loginService = loginService
     }
     
     // MARK: - Validation
     
     private func validateEmail() {
+        self.onErrorCredentials?(nil)
         let hideEmailError = email.isEmpty || credentialsValidator.isEmailValid(email)
         
         if hideEmailError {
@@ -62,7 +72,10 @@ public final class LoginViewModel: LoginViewModelProtocol {
     }
     
     private func validatePassword() {
-        if credentialsValidator.isPasswordValid(password) {
+        self.onErrorCredentials?(nil)
+        let hidePasswordError = password.isEmpty || credentialsValidator.isPasswordValid(password)
+        
+        if hidePasswordError {
             onPasswordErrorChanged?(nil)
         } else {
             onPasswordErrorChanged?("Password is too short.")
@@ -85,7 +98,20 @@ public final class LoginViewModel: LoginViewModelProtocol {
     }
     
     public func onLogin() {
-        onLoginAction()
+        let request = LoginRequest(email: email, password: password)
+        onLoadingStateChange?(true)
+        
+        loginService.signIn(request: request) { result in
+            DispatchQueue.main.async {
+                self.onLoadingStateChange?(false)
+                switch result {
+                case .success:
+                    self.onLoginAction()
+                case .failure:
+                    self.onErrorCredentials?("Wrong email address or password")
+                }
+            }
+        }
     }
     
     public func onForgotPassword() {

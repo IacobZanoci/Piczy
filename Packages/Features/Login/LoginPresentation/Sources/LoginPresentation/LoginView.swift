@@ -34,6 +34,12 @@ public class LoginView: UIView {
     private let onForgotPasswordButtonTapped: () -> Void
     private let onCreateAccountButtonTapped: () -> Void
     
+    public var error: String? {
+        didSet {
+            updateErrorCredentialsLabel(error)
+        }
+    }
+    
     // MARK: - Views
     
     private lazy var backgroundImageView: UIImageView = {
@@ -45,7 +51,7 @@ public class LoginView: UIView {
         return imageView
     }()
     
-    private lazy var loginButton: PrimaryButton = {
+    public lazy var loginButton: PrimaryButton = {
         let button = PrimaryButton()
         button.setTitle("Log In", for: .normal)
         button.isEnabled = false
@@ -124,6 +130,14 @@ public class LoginView: UIView {
         return label
     }()
     
+    private lazy var errorCredentialsLabel: UILabel = {
+        let label = UILabel()
+        label.font = .Piczy.caption
+        label.textColor = UIColor.Piczy.error
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     private lazy var spacerView: UIView = {
         let spacer = UIView()
         spacer.translatesAutoresizingMaskIntoConstraints = false
@@ -149,7 +163,7 @@ public class LoginView: UIView {
     }
     
     @objc private func loginButtonTapped() {
-        onLoginButtonTapped()
+        self.onLoginButtonTapped()
     }
     
     @objc private func forgotPasswordButtonTapped() {
@@ -180,6 +194,25 @@ public class LoginView: UIView {
         
         UIView.animate(withDuration: Constants.stackViewMovementAnimationDuration) {
             self.layoutIfNeeded()
+        }
+    }
+    
+    func updateErrorCredentialsLabel(_ mesage: String?) {
+        if mesage != nil  {
+            errorCredentialsLabel.text = mesage
+            errorCredentialsLabel.isHidden = false
+        } else {
+            errorCredentialsLabel.text = nil
+            errorCredentialsLabel.isHidden = true
+        }
+    }
+    
+    func showSpinner(_ isLoading: Bool) {
+        if isLoading {
+            self.loginButton.startLoading()
+        } else {
+            self.loginButton.setTitle("Sign In", for: .normal)
+            self.loginButton.stopLoading()
         }
     }
     
@@ -233,6 +266,7 @@ extension LoginView {
     
     private func setupStackView() {
         stackView.addArrangedSubview(loginTitleLabel)
+        stackView.addArrangedSubview(errorCredentialsLabel)
         stackView.addArrangedSubview(emailTextField)
         stackView.addArrangedSubview(passwordTextField)
         stackView.addArrangedSubview(loginButton)

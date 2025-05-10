@@ -102,5 +102,12 @@ public class LoginViewController: UIViewController {
         viewModel.onLoginButtonEnabled = { [weak self] isEnable in
             self?.loginFormView.enableLoginButton(isEnable: isEnable)
         }
+        
+        viewModel.onErrorCredentials = { [weak self] errorCredentials in
+            self?.loginFormView.updateErrorCredentialsLabel(errorCredentials)
+        }
+        viewModel.onLoadingStateChange = { [weak self] isLoading in
+            self?.loginFormView.showSpinner(isLoading)
+        }
     }
 }
