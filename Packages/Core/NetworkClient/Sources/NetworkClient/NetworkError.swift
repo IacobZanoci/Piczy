@@ -7,12 +7,14 @@
 
 import Foundation
 
-public enum NetworkError: Error {
-    case invalidCredentials
+public enum NetworkError: Error, Equatable {
+    
     case invalidURL
     case encodingError
     case decodingError
     case serverError(statusCode: Int)
     case noData
-    case unknown(Error)
+    case invalidCredentials
+    case emailAlreadyExists
+    case unknown
 }
