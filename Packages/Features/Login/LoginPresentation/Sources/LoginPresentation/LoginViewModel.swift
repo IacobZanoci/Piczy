@@ -8,6 +8,7 @@
 import Foundation
 import CredentialsValidator
 import LoginDomain
+import NetworkClient
 
 @Observable
 public final class LoginViewModel: LoginViewModelProtocol {

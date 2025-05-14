@@ -18,7 +18,10 @@ final class LoginViewModelTests: XCTestCase {
             },
             onForgotPassword: {},
             onCreateAccount: {},
-            credentialsValidator: MockCredentialsValidator(shouldEmailBeValid: true, shouldPasswordBeValid: true),
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: true,
+                shouldPasswordBeValid: true
+            ),
             loginService: MockLoginServiceForTests(expectedSignInResponse: .success(LoginResponse(token: "piczyToken")))
         )
         
@@ -38,7 +41,10 @@ final class LoginViewModelTests: XCTestCase {
             onLogin: {},
             onForgotPassword: {},
             onCreateAccount: {},
-            credentialsValidator: MockCredentialsValidator(shouldEmailBeValid: true, shouldPasswordBeValid: true),
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: true,
+                shouldPasswordBeValid: true
+            ),
             loginService: MockLoginServiceForTests(expectedSignInResponse: .failure(.invalidCredentials))
         )
         
@@ -55,4 +61,235 @@ final class LoginViewModelTests: XCTestCase {
         
         XCTAssertEqual(capturedError, "Wrong email address or password")
     }
+    
+    func test_givenEmptyEmail_whenValidateEmail_thenShouldNotDisplayErrorMessage() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: true,
+                shouldPasswordBeValid: true
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var receivedEmailError: String?
+        viewModel.onEmailErrorChanged = { error in
+            receivedEmailError = error
+        }
+        
+        viewModel.onEmailChanged(to: "")
+        viewModel.onLogin()
+        
+        XCTAssertNil(receivedEmailError, "Expected no error message when email is empty")
+    }
+    
+    func test_givenValidEmail_whenValidateEmail_thenShouldNotDisplayErrorMessage() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: true,
+                shouldPasswordBeValid: true
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var receivedEmailError: String?
+        viewModel.onEmailErrorChanged = { error in
+            receivedEmailError = error
+        }
+        
+        viewModel.onEmailChanged(to: "piczy@gmail.com")
+        viewModel.onLogin()
+        
+        XCTAssertNil(receivedEmailError, "Expected no error message when email is valid")
+    }
+    
+    func test_givenInvalidEmail_whenValidateEmail_thenShouldDisplayErrorMessage() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: false,
+                shouldPasswordBeValid: true
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var receivedEmailError: String?
+        viewModel.onEmailErrorChanged = { error in
+            receivedEmailError = error
+        }
+        
+        viewModel.onEmailChanged(to: "piczy@invalidUser")
+        viewModel.onLogin()
+        
+        XCTAssertEqual(receivedEmailError, "The email entered isn't valid.", "Expected specific error message for invalid email.")
+    }
+    
+    func test_givenValidPassword_whenValidatePassword_thenShouldNotDisplayErrorMessage() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: true,
+                shouldPasswordBeValid: true
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var receivedPasswordError: String?
+        viewModel.onPasswordErrorChanged = { error in
+            receivedPasswordError = error
+        }
+        
+        viewModel.onPasswordChanged(to: "123456")
+        viewModel.onLogin()
+        
+        XCTAssertNil(receivedPasswordError, "Expected no error message when password is valid.")
+    }
+    
+    func test_givenInvalidPassword_whenValidatePassword_thenShouldDisplayErrorMessage() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: false,
+                shouldPasswordBeValid: false
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var receivedPasswordError: String?
+        viewModel.onPasswordErrorChanged = { error in
+            receivedPasswordError = error
+        }
+        
+        viewModel.onPasswordChanged(to: "123")
+        viewModel.onLogin()
+        
+        XCTAssertEqual(receivedPasswordError, "Password is too short.", "Expected specific error message for invalid password.")
+    }
+    
+    func test_givenValidEmailAndValidPassword_whenUpdateLoginButtonState_thenShouldEnableLoginButton() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: true,
+                shouldPasswordBeValid: true
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var isLoginButtonEnabled: Bool?
+        viewModel.onLoginButtonEnabled = { isEnabled in
+            isLoginButtonEnabled = isEnabled
+        }
+        
+        viewModel.onEmailChanged(to: "piczy@gmail.com")
+        viewModel.onPasswordChanged(to: "123456")
+        viewModel.onLogin()
+        
+        XCTAssertTrue(isLoginButtonEnabled ?? false, "Expected login button to be enabled when both email and password are valid.")
+    }
+    
+    func test_givenInvalidEmailAndValidPassword_whenUpdateLoginButtonState_thenShouldDisableLoginButton() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: false,
+                shouldPasswordBeValid: true
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var isLoginButtonEnabled: Bool?
+        viewModel.onLoginButtonEnabled = { isEnabled in
+            isLoginButtonEnabled = isEnabled
+        }
+        
+        viewModel.onEmailChanged(to: "piczy@invalidUser")
+        viewModel.onPasswordChanged(to: "123456")
+        viewModel.onLogin()
+        
+        XCTAssertFalse(isLoginButtonEnabled ?? true, "Expected login button to be disabled when email is invalid and password is valid.")
+    }
+    
+    func test_givenValidEmailAndInvalidPassword_whenUpdateLoginButtonState_thenShouldDisableLoginButton() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: true,
+                shouldPasswordBeValid: false
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var isLoginButtonEnabled: Bool?
+        viewModel.onLoginButtonEnabled = { isEnabled in
+            isLoginButtonEnabled = isEnabled
+        }
+        
+        viewModel.onEmailChanged(to: "piczy@gmail.com")
+        viewModel.onPasswordChanged(to: "123")
+        viewModel.onLogin()
+        
+        XCTAssertFalse(isLoginButtonEnabled ?? true, "Expected login button to be disabled when email is valid and password is invalid.")
+    }
+    
+    func test_givenInvalidEmailAndInvalidPassword_whenUpdateLoginButtonState_thenShouldDisableLoginButton() {
+        let viewModel = LoginViewModel(
+            onLogin: {},
+            onForgotPassword: {},
+            onCreateAccount: {},
+            credentialsValidator: MockCredentialsValidator(
+                shouldEmailBeValid: false,
+                shouldPasswordBeValid: false
+            ),
+            loginService: MockLoginServiceForTests(
+                expectedSignInResponse: .failure(.invalidCredentials)
+            )
+        )
+        
+        var isLoginButtonEnabled: Bool?
+        viewModel.onLoginButtonEnabled = { isEnabled in
+            isLoginButtonEnabled = isEnabled
+        }
+        
+        viewModel.onEmailChanged(to: "piczy@invalidUser")
+        viewModel.onPasswordChanged(to: "123")
+        viewModel.onLogin()
+        
+        XCTAssertFalse(isLoginButtonEnabled ?? true, "Expected login button to be disabled when email is invalid and password is invalid.")
+    }
+    
+    
 }
