@@ -24,19 +24,20 @@ public final class MockSignUpService: SignUpServiceProtocol {
     
     public func signUp(
         request: SignUpRequest,
-        completion: @escaping (Result<SignUpResponse, NetworkError>) -> Void
+        completion: @escaping @Sendable (Result<SignUpResponse, NetworkError>) -> Void
     ) {
-        if request.email == "piczy@gmail.com" {
-            completion(.failure(.emailAlreadyExists))
-            return
-        }
-        
-        if request.email.contains("@") &&
-            request.password.count > 5 &&
-            request.confirmPassword == request.password {
-            completion(.success(SignUpResponse(token: "piczyToken")))
-        } else {
-            completion(.failure(.invalidCredentials))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            if request.email == "piczy@gmail.com" {
+                completion(.failure(.emailAlreadyExists))
+                return
+            }
+            if request.email.contains("@") &&
+                request.password.count > 5 &&
+                request.confirmPassword == request.password {
+                completion(.success(SignUpResponse(token: "piczyToken")))
+            } else {
+                completion(.failure(.invalidCredentials))
+            }
         }
     }
 }

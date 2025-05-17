@@ -130,39 +130,8 @@ public final class SignUpViewController: UIViewController {
         viewModel.onSignUpButtonEnabled = { [weak self] isEnable in
             self?.signUpView.enableSignUpButton(isEnable: isEnable)
         }
+        viewModel.onLoadingStateChange = { [weak self] isLoading in
+            self?.signUpView.showSpinner(isLoading)
+        }
     }
-}
-
-// MARK: - Preview
-
-private final class ViewModelFixture: SignUpViewModelProtocol {
-    var onEmailErrorChanged: ((String?) -> Void)?
-    
-    var onPasswordErrorChanged: ((String?) -> Void)?
-    
-    var onConfirmPasswordErrorChanged: ((String?) -> Void)?
-    
-    var onSignUpButtonEnabled: ((Bool) -> Void)?
-    
-    func onEmailChanged(to email: String) {
-        onEmailErrorChanged?(email.contains("@") ? nil : "Invalid email")
-    }
-    
-    func onPasswordChanged(to password: String) {
-        onPasswordErrorChanged?(password.count >= 6 ? nil : "Password too short")
-    }
-    
-    func onConfirmPasswordChanged(to confirmPassword: String) {
-        onConfirmPasswordErrorChanged?(confirmPassword == "password" ? nil : "Passwords do not match")
-    }
-    
-    func onSignUp() {
-        print("Success")
-    }
-}
-
-#Preview {
-    SignUpViewController(
-        viewModel: ViewModelFixture()
-    )
 }

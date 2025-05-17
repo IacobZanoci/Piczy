@@ -24,6 +24,7 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     public var onPasswordErrorChanged: ((String?) -> Void)?
     public var onConfirmPasswordErrorChanged: ((String?) -> Void)?
     public var onSignUpButtonEnabled: ((Bool) -> Void)?
+    public var onLoadingStateChange: ((Bool) -> Void)?
     
     private var email: String = "" {
         didSet {
@@ -109,38 +110,28 @@ public final class SignUpViewModel: SignUpViewModelProtocol {
     }
     
     public func onSignUp() {
-        let request = SignUpRequest(
-            email: email,
-            password: password,
-            confirmPassword: confirmPassword
-        )
+        let request = SignUpRequest(email: email,
+                                    password: password,
+                                    confirmPassword: confirmPassword)
         
-        signUpService.signUp(request: request) { [weak self] result in
-            
-            let errorMessage: String?
-            let token: String?
-            
-            switch result {
-            case .success(let response):
-                token = response.token
-                errorMessage = nil
-            case .failure(let error):
-                token = nil
-                switch error {
-                case .emailAlreadyExists:
-                    errorMessage = "Email already in use"
-                default:
-                    errorMessage = "Unknown error"
-                }
-            }
-            
+        onLoadingStateChange?(true)
+        
+        signUpService.signUp(request: request) { result in
             DispatchQueue.main.async {
-                if let token = token {
-                    print("Signed Up with token: \(token)")
-                    self?.onEmailErrorChanged?(nil)
-                    self?.onSignUpAction()
-                } else if let message = errorMessage {
-                    self?.onEmailErrorChanged?(message)
+                self.onLoadingStateChange?(false)
+                switch result {
+                case .success(let response):
+                    print("Signed Up with token: \(response.token)")
+                    self.onSignUpAction()
+                case .failure(let error):
+                    let errorMessage: String
+                    switch error {
+                    case .emailAlreadyExists:
+                        errorMessage = "Email already in use"
+                    default:
+                        errorMessage = "Unknown error"
+                    }
+                    self.onEmailErrorChanged?(errorMessage)
                 }
             }
         }
