@@ -33,7 +33,10 @@ public final class SignUpService: SignUpServiceProtocol {
     ) {
         let endpoint = url.appendingPathComponent("/signUp/piczy...")
         
-        networkClient.post(to: endpoint, body: request, headers: nil, queryItems: nil) { result in
+        networkClient.post(to: endpoint,
+                           body: request,
+                           headers: nil,
+                           queryItems: nil) { result in
             
             switch result {
             case .success(let data):
@@ -43,6 +46,7 @@ public final class SignUpService: SignUpServiceProtocol {
                 } catch {
                     completion(.failure(.decodingError))
                 }
+                
             case .failure(let error):
                 completion(.failure(error))
             }

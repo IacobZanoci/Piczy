@@ -16,6 +16,7 @@ public protocol SignUpViewModelProtocol {
     var onPasswordErrorChanged: ((String?) -> Void)? { get set }
     var onConfirmPasswordErrorChanged: ((String?) -> Void)? { get set }
     var onSignUpButtonEnabled: ((Bool) -> Void)? { get set }
+    var onLoadingStateChange: ((Bool) -> Void)? { get set }
     
     // MARK: - Methods
     

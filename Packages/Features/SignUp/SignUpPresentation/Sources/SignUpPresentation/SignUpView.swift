@@ -72,7 +72,7 @@ final class SignUpView: UIView {
         return textField
     }()
     
-    private lazy var signUpButton: PrimaryButton = {
+    public lazy var signUpButton: PrimaryButton = {
         let button = PrimaryButton()
         button.setTitle("Create account", for: .normal)
         button.isEnabled = false
@@ -124,6 +124,15 @@ final class SignUpView: UIView {
     
     func enableSignUpButton(isEnable: Bool) {
         signUpButton.isEnabled = isEnable
+    }
+    
+    func showSpinner(_ isLoading: Bool) {
+        if isLoading {
+            self.signUpButton.startLoading()
+        } else {
+            self.signUpButton.setTitle("Create account", for: .normal)
+            self.signUpButton.stopLoading()
+        }
     }
     
     // MARK: - Initializers
