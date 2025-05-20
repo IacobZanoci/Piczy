@@ -27,8 +27,11 @@ final class MainCoordinator: CoordinatorProtocol {
     // MARK: - Coordinators
     
     lazy var authenticationCoordinator: AuthenticationCoordinator = {
-        AuthenticationCoordinator(navigationController,
-                                  dependencyContainer: dependencyContainer)
+        AuthenticationCoordinator(
+            navigationController,
+            dependencyContainer: dependencyContainer,
+            mainCoordinator: self
+        )
     }()
     
     lazy var browseCoordinator: BrowseCoordinator = {
