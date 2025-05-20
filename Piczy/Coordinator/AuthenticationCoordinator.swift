@@ -13,13 +13,16 @@ import SignUpPresentation
 final class AuthenticationCoordinator: CoordinatorProtocol {
     var navigationController: UINavigationController
     let dependencyContainer: DependencyContainer
+    private weak var mainCoordinator: MainCoordinator?
     
     init(
         _ navigationController: UINavigationController,
-        dependencyContainer: DependencyContainer
+        dependencyContainer: DependencyContainer,
+        mainCoordinator: MainCoordinator
     ) {
         self.navigationController = navigationController
         self.dependencyContainer = dependencyContainer
+        self.mainCoordinator = mainCoordinator
     }
     
     func start() {
@@ -46,8 +49,8 @@ extension AuthenticationCoordinator {
     
     private func makeLoginViewController() -> UIViewController {
         let viewModel = LoginViewModel(
-            onLogin: {
-                print("On login button pressed")
+            onLogin: { [weak self] in
+                self?.mainCoordinator?.startBrowseCoordinator()
             },
             onForgotPassword: {
                 print("On forgot password button pressed")

@@ -11,6 +11,7 @@
 		4221F1062DCE98F20098023E /* LoginDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 4221F1052DCE98F20098023E /* LoginDomain */; };
 		4221F1652DCF81890098023E /* SignUpDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 4221F1642DCF81890098023E /* SignUpDomain */; };
 		42A0D48A2DD88C2600566812 /* ImageDetailsPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42A0D4892DD88C2600566812 /* ImageDetailsPresentation */; };
+		42A0D4D42DDBA30400566812 /* BrowsePresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42A0D4D32DDBA30400566812 /* BrowsePresentation */; };
 		42D971372DBEA016007C3136 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971362DBEA016007C3136 /* DesignSystem */; };
 		42D971392DBEA019007C3136 /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971382DBEA019007C3136 /* UIComponents */; };
 		42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D9713A2DBEA01F007C3136 /* WelcomePresentation */; };
@@ -26,6 +27,7 @@
 		4257BDC72DBE94B100955D45 /* WelcomePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WelcomePresentation; sourceTree = "<group>"; };
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		42A0D4882DD889BB00566812 /* ImageDetailsPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ImageDetailsPresentation; sourceTree = "<group>"; };
+		42A0D4D22DDBA29800566812 /* BrowsePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = BrowsePresentation; sourceTree = "<group>"; };
 		42D971562DBEC2BD007C3136 /* SignUpPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SignUpPresentation; sourceTree = "<group>"; };
 		42D971722DBECBC7007C3136 /* LoginPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoginPresentation; sourceTree = "<group>"; };
 		42D9718D2DCBFF25007C3136 /* CredentialsValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CredentialsValidator; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42A0D4D42DDBA30400566812 /* BrowsePresentation in Frameworks */,
 				4221F0D52DCE33F80098023E /* NetworkClient in Frameworks */,
 				42D971582DBEC5BA007C3136 /* SignUpPresentation in Frameworks */,
 				42D971742DBECD2D007C3136 /* LoginPresentation in Frameworks */,
@@ -77,6 +80,7 @@
 		4257BDC52DBE941300955D45 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				42A0D4D02DDBA1CA00566812 /* Browse */,
 				42A0D4872DD888FE00566812 /* ImageDetails */,
 				42D971712DBECB9A007C3136 /* Login */,
 				42D971552DBEC252007C3136 /* SignUp */,
@@ -118,6 +122,14 @@
 				42A0D4882DD889BB00566812 /* ImageDetailsPresentation */,
 			);
 			path = ImageDetails;
+			sourceTree = "<group>";
+		};
+		42A0D4D02DDBA1CA00566812 /* Browse */ = {
+			isa = PBXGroup;
+			children = (
+				42A0D4D22DDBA29800566812 /* BrowsePresentation */,
+			);
+			path = Browse;
 			sourceTree = "<group>";
 		};
 		42D971352DBEA016007C3136 /* Frameworks */ = {
@@ -193,6 +205,7 @@
 				4221F1052DCE98F20098023E /* LoginDomain */,
 				4221F1642DCF81890098023E /* SignUpDomain */,
 				42A0D4892DD88C2600566812 /* ImageDetailsPresentation */,
+				42A0D4D32DDBA30400566812 /* BrowsePresentation */,
 			);
 			productName = Piczy;
 			productReference = 42EFDA162DB1844B00BC9FD6 /* Piczy.app */;
@@ -477,6 +490,10 @@
 		42A0D4892DD88C2600566812 /* ImageDetailsPresentation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImageDetailsPresentation;
+		};
+		42A0D4D32DDBA30400566812 /* BrowsePresentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BrowsePresentation;
 		};
 		42D971362DBEA016007C3136 /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
