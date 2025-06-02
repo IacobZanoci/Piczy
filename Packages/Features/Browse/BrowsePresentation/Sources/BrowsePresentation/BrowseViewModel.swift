@@ -6,18 +6,22 @@
 //
 
 import Foundation
+import BrowseDomain
 
 @Observable
 public final class BrowseViewModel: BrowseViewModelProtocol {
     
     // MARK: - Properties
     
+    private let browseService: BrowseServiceProtocol
     public var imageUrls: [ImageItem] = []
     public var onImageSelected: ((ImageItem) -> Void)?
     public var onImagesUpdated: (() -> Void)?
     public var onBrowseAction: () -> Void
     public var onLikesAction: () -> Void
     public var onSettingsAction: () -> Void
+    private var currentPage: Int = 1
+    private var isLoading: Bool = false
     private var searchDebounceTask: DispatchWorkItem?
     
     public var searchQuery: String = "" {
@@ -28,6 +32,8 @@ public final class BrowseViewModel: BrowseViewModelProtocol {
             
             let task = DispatchWorkItem { [weak self] in
                 guard let self = self else { return }
+                self.currentPage = 1
+                self.imageUrls = []
                 self.fetchImages()
             }
             
@@ -43,21 +49,49 @@ public final class BrowseViewModel: BrowseViewModelProtocol {
         onBrowseAction: @escaping () -> Void,
         onLikesAction: @escaping () -> Void,
         onSettingsAction: @escaping () -> Void,
-        onImageSelected: ((ImageItem) -> Void)?
+        onImageSelected: ((ImageItem) -> Void)?,
+        browseService: BrowseServiceProtocol
     ){
         self.onBrowseAction = onBrowseAction
         self.onLikesAction = onLikesAction
         self.onSettingsAction = onSettingsAction
         self.onImageSelected = onImageSelected
+        self.browseService = browseService
     }
     
-    // MARK: - Events
+    // MARK: - Methods
     
     public func fetchImages() {
-        guard !searchQuery.isEmpty else {
-            self.imageUrls = []
-            onImagesUpdated?()
+        guard !searchQuery.isEmpty, !isLoading else {
+            if searchQuery.isEmpty {
+                self.imageUrls = []
+                onImagesUpdated?()
+            }
             return
+        }
+        
+        isLoading = true
+        
+        browseService.fetchImages(page: currentPage, searchQuery: searchQuery) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+                
+                switch result {
+                case .success(let images):
+                    if self.currentPage == 1 {
+                        self.imageUrls = images
+                    } else {
+                        self.imageUrls += images
+                    }
+                    self.currentPage += 1
+                    self.onImagesUpdated?()
+                    
+                case .failure(let error):
+                    print("Error fetching images: \(error.localizedDescription)")
+                }
+            }
         }
     }
     

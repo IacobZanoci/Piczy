@@ -48,10 +48,10 @@ public class BrowseViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .Piczy.primaryButton
+        view.backgroundColor = .Piczy.background
         
         browseFormView.collectionView.dataSource = self
-        browseFormView.collectionView.delegate = browseFormView
+        browseFormView.collectionView.delegate = self
         
         bindViewModel()
         updateImageUI()
@@ -101,5 +101,46 @@ extension BrowseViewController: UICollectionViewDataSource {
 extension BrowseViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.didSelectItemAt(indexPath: indexPath)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.item == viewModel.imageUrls.count - 1 {
+            viewModel.fetchImages()
+        }
+    }
+}
+
+extension BrowseViewController: UICollectionViewDelegateFlowLayout {
+    
+    public func collectionView(_ collectionView: UICollectionView,
+                               layout collectionViewLayout: UICollectionViewLayout,
+                               insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView,
+                               layout collectionViewLayout: UICollectionViewLayout,
+                               minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return .small
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView,
+                               layout collectionViewLayout: UICollectionViewLayout,
+                               minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return .small
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView,
+                               layout collectionViewLayout: UICollectionViewLayout,
+                               sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let numberOfItemsPerRow: CGFloat = 2
+        
+        let spacing: CGFloat = .small
+        let itemWidth = (collectionView.bounds.width - CGFloat(spacing)) / numberOfItemsPerRow
+        
+        let aspectRatio: CGFloat = 4.0 / 5.0
+        let itemHeight = itemWidth / aspectRatio
+        
+        return CGSize(width: itemWidth, height: itemHeight)
     }
 }

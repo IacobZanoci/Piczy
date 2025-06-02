@@ -80,9 +80,9 @@ public class BrowseView: UIView, UISearchBarDelegate {
     public lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = .systemBackground
+        cv.backgroundColor = .Piczy.background
         cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "ImageCell")
+        cv.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.identifier)
         return cv
     }()
     
@@ -205,6 +205,7 @@ public class BrowseView: UIView, UISearchBarDelegate {
         
         super.init(frame: .zero)
         setupViewLayout()
+        searchBar.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -259,42 +260,5 @@ public class BrowseView: UIView, UISearchBarDelegate {
             likesButton.topAnchor.constraint(equalTo: tabBarStackView.topAnchor, constant: .extraSmall)
         ]
         NSLayoutConstraint.activate(stackViewConstraints)
-    }
-}
-
-extension BrowseView: UICollectionViewDelegateFlowLayout {
-    
-    public func collectionView(_ collectionView: UICollectionView,
-                               layout collectionViewLayout: UICollectionViewLayout,
-                               insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: .small, bottom: 0, right: .small)
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView,
-                               layout collectionViewLayout: UICollectionViewLayout,
-                               minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return .small
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView,
-                               layout collectionViewLayout: UICollectionViewLayout,
-                               minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return .small
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView,
-                               layout collectionViewLayout: UICollectionViewLayout,
-                               sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let numberOfItemsPerRow: CGFloat = 2
-        let interItemSpacing: CGFloat = .small
-        let sectionInsets: CGFloat = .small * numberOfItemsPerRow
-        
-        let totalSpacing = sectionInsets + (interItemSpacing * (numberOfItemsPerRow - 1))
-        let itemWidth = (collectionView.bounds.width - totalSpacing) / numberOfItemsPerRow
-        
-        let aspectRatio: CGFloat = 4.0 / 5.0
-        let itemHeight = itemWidth / aspectRatio
-        
-        return CGSize(width: itemWidth, height: itemHeight)
     }
 }

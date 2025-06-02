@@ -9,6 +9,7 @@ import Foundation
 
 public enum NetworkError: Error, Equatable {
     
+    case invalidQuery
     case invalidURL
     case encodingError
     case decodingError

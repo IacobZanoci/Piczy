@@ -24,6 +24,7 @@
 		4221F0D32DCE33C80098023E /* NetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkClient; sourceTree = "<group>"; };
 		4221F1042DCE98D90098023E /* LoginDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoginDomain; sourceTree = "<group>"; };
 		4221F1632DCF64180098023E /* SignUpDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SignUpDomain; sourceTree = "<group>"; };
+		4225EB982DE9F66900CC9C6A /* BrowseDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = BrowseDomain; sourceTree = "<group>"; };
 		4257BDC72DBE94B100955D45 /* WelcomePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WelcomePresentation; sourceTree = "<group>"; };
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		42A0D4882DD889BB00566812 /* ImageDetailsPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ImageDetailsPresentation; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		42A0D4D02DDBA1CA00566812 /* Browse */ = {
 			isa = PBXGroup;
 			children = (
+				4225EB982DE9F66900CC9C6A /* BrowseDomain */,
 				42A0D4D22DDBA29800566812 /* BrowsePresentation */,
 			);
 			path = Browse;
@@ -334,6 +336,8 @@
 		};
 		42EFDA2C2DB1844C00BC9FD6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 42EFDA182DB1844B00BC9FD6 /* Piczy */;
+			baseConfigurationReferenceRelativePath = Development.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -397,6 +401,8 @@
 		};
 		42EFDA2D2DB1844C00BC9FD6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 42EFDA182DB1844B00BC9FD6 /* Piczy */;
+			baseConfigurationReferenceRelativePath = Development.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

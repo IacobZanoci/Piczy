@@ -6,6 +6,7 @@
 //
 
 import CredentialsValidator
+import BrowseDomain
 import NetworkClient
 import LoginDomain
 import SignUpDomain
@@ -26,4 +27,13 @@ final class DependencyContainer {
     
     /// Shared instance of `MockSignUpService` used for mocking SignUp network requests.
     lazy var signUpService = MockSignUpService(networkClient: networkClient)
+    
+    /// Shared instance of `BrowseService` used for listing images from API.
+    lazy var browseService = BrowseService(networkClient: networkClient, config: config)
+    
+    /// Shared instance of `UnsplashConfig` userd for configuration Unsplash API.
+    lazy var config = UnsplashConfig(
+        baseURL: Environment.baseURL,
+        accessKey: Environment.apiKey
+    )
 }

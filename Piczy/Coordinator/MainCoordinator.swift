@@ -35,7 +35,10 @@ final class MainCoordinator: CoordinatorProtocol {
     }()
     
     lazy var browseCoordinator: BrowseCoordinator = {
-        BrowseCoordinator(navigationController)
+        BrowseCoordinator(
+            navigationController,
+            dependencyContainer: dependencyContainer
+        )
     }()
     
     public func start() {
