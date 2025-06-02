@@ -4,6 +4,12 @@
 ## User settings
 xcuserdata/
 
+# Local environment file containing API keys and sensitive config
+.env
+
+# Auto-generated config with resolved secret values (used at build time)
+Piczy/Development.xcconfig
+
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
 *.xccheckout

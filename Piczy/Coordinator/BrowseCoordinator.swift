@@ -10,9 +10,14 @@ import BrowsePresentation
 
 final class BrowseCoordinator: CoordinatorProtocol {
     var navigationController: UINavigationController
+    let dependencyContainer: DependencyContainer
+    private weak var mainCoordinator: MainCoordinator?
     
-    init(_ navigationController: UINavigationController) {
+    init(_ navigationController: UINavigationController,
+         dependencyContainer: DependencyContainer
+    ) {
         self.navigationController = navigationController
+        self.dependencyContainer = dependencyContainer
     }
     
     func start() {
@@ -33,9 +38,10 @@ extension BrowseCoordinator {
             onSettingsAction: {
                 print("Settings button tapped")
             },
-            onImageSelected: { /*[weak self]*/ selectedImage in
-                print("Tapped on an image")
-            }
+            onImageSelected: { [weak self] selectedImage in
+                print("Tapped on an image: \(selectedImage)")
+            },
+            browseService: dependencyContainer.browseService
         )
         return BrowseViewController(viewModel: viewModel)
     }

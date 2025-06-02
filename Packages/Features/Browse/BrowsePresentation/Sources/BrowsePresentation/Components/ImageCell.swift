@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import LoginPresentation
+import BrowseDomain
 
 class ImageCell: UICollectionViewCell {
     static let identifier = "ImageCell"
@@ -15,6 +15,7 @@ class ImageCell: UICollectionViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.layer.cornerRadius = 10
         return iv
     }()
     
@@ -32,14 +33,25 @@ class ImageCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
-        contentView.layer.borderColor = UIColor.red.cgColor
-        contentView.layer.borderWidth = 1
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     func configure(with item: ImageItem) {
-        // Configures the cell with data from the ImageItem
+        guard let url = URL(string: item.urls.regular) else {
+            imageView.image = nil
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let self = self, let data = data, error == nil,
+                  let image = UIImage(data: data) else { return }
+            
+            DispatchQueue.main.async {
+                self.imageView.image = image
+            }
+        }.resume()
     }
 }

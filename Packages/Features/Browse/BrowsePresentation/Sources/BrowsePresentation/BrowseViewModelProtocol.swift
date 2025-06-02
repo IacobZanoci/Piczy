@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import BrowseDomain
 
-
+@MainActor
 public protocol BrowseViewModelProtocol {
     var imageUrls: [ImageItem] { get }
     var onImagesUpdated: (() -> Void)? { get set }
