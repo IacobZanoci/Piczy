@@ -8,11 +8,19 @@ let package = Package(
     products: [
         .library(
             name: "BrowseDomain",
-            targets: ["BrowseDomain"]),
+            targets: ["BrowseDomain"]
+        ),
+    ],
+    dependencies: [
+        .package(path: "../../Core/NetworkClient")
     ],
     targets: [
         .target(
-            name: "BrowseDomain"),
+            name: "BrowseDomain",
+            dependencies: [
+                .product(name: "NetworkClient", package: "NetworkClient")
+            ]
+        ),
         .testTarget(
             name: "BrowseDomainTests",
             dependencies: ["BrowseDomain"]
