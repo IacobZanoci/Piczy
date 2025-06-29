@@ -7,6 +7,9 @@
 
 import UIKit
 import BrowsePresentation
+import BrowseDomain
+import ImageDetailsPresentation
+import ImageDetailsDomain
 
 final class BrowseCoordinator: CoordinatorProtocol {
     var navigationController: UINavigationController
@@ -39,10 +42,31 @@ extension BrowseCoordinator {
                 print("Settings button tapped")
             },
             onImageSelected: { [weak self] selectedImage in
+                self?.showImageDetails(for: selectedImage)
                 print("Tapped on an image: \(selectedImage)")
             },
             browseService: dependencyContainer.browseService
         )
         return BrowseViewController(viewModel: viewModel)
+    }
+    
+    private func showImageDetails(for image: ImageItem) {
+        guard let url = URL(string: image.urls.regular) else {
+            print("Invalid image URL")
+            return
+        }
+        
+        let viewModel = ImageDetailsViewModel(
+            imageURL: url,
+            pictureID: image.id,
+            imageDetailsService: dependencyContainer.imageDetailsService,
+            imageDownloadService: dependencyContainer.imageDownloadService
+        )
+        
+        let detailsVC = ImageDetailsViewController(
+            viewModel: viewModel,
+            imageDownloadService: dependencyContainer.imageDownloadService
+        )
+        navigationController.pushViewController(detailsVC, animated: true)
     }
 }

@@ -7,20 +7,27 @@
 
 import Foundation
 import UIKit
+import ImageDetailsDomain
 
 @Observable
 public final class ImageDetailsViewModel: ImageDetailsViewModelProtocol {
     
+    // MARK: - Dependencies
+    
+    private let imageDetailsService: ImageDetailsServiceProtocol
+    private let imageDownloadService: ImageDownloadServiceProtocol
+    
     // MARK: - Properties
     
+    public var error: ImageDetailsError? = nil
     public var image: UIImage? = nil
     
-    public let imageURL: URL
-    public let authorName: String
-    public let location: String
-    public let publishedDate: String
-    public let cameraInfo: String
-    public let licenseInfo: String
+    public var imageURL: URL
+    public var authorName: String
+    public var location: String
+    public var publishedDate: String
+    public var cameraInfo: String
+    public var licenseInfo: String
     
     public var onLikedStateChanged: ((Bool) -> Void)?
     
@@ -29,6 +36,8 @@ public final class ImageDetailsViewModel: ImageDetailsViewModelProtocol {
             onLikedStateChanged?(isLiked)
         }
     }
+    
+    public var onDataFetched: (() -> Void)?
     
     // MARK: - Computed properties
     
@@ -79,28 +88,19 @@ public final class ImageDetailsViewModel: ImageDetailsViewModelProtocol {
     }
     
     public var displayLicenseInfo: NSAttributedString? {
-        guard !licenseInfo.isEmpty else { return nil }
-        
-        let fullText = licenseInfo.isEmpty
-        ? "Unknown License"
-        : licenseInfo
-        
+        let fullText = "Free to use under the Unsplash License"
         let attributedText = NSMutableAttributedString(
             string: fullText,
-            attributes: [
-                .font: UIFont.Piczy.body
-            ]
+            attributes: [.font: UIFont.Piczy.body]
         )
         
         let underlineText = "Unsplash License"
-        
         if let range = fullText.range(of: underlineText) {
             let nsRange = NSRange(range, in: fullText)
             attributedText.addAttributes([
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ], range: nsRange)
         }
-        
         return attributedText
     }
     
@@ -108,11 +108,14 @@ public final class ImageDetailsViewModel: ImageDetailsViewModelProtocol {
     
     public init(
         imageURL: URL,
-        authorName: String,
-        location: String,
-        publishedDate: String,
-        cameraInfo: String,
-        licenseInfo: String
+        authorName: String = "",
+        location: String = "",
+        publishedDate: String = "",
+        cameraInfo: String = "",
+        licenseInfo: String = "",
+        pictureID: String,
+        imageDetailsService: ImageDetailsServiceProtocol,
+        imageDownloadService: ImageDownloadServiceProtocol
     ) {
         self.imageURL = imageURL
         self.authorName = authorName
@@ -120,6 +123,10 @@ public final class ImageDetailsViewModel: ImageDetailsViewModelProtocol {
         self.publishedDate = publishedDate
         self.cameraInfo = cameraInfo
         self.licenseInfo = licenseInfo
+        self.imageDetailsService = imageDetailsService
+        self.imageDownloadService = imageDownloadService
+        
+        fetchPictureDetails(pictureId: pictureID)
     }
     
     // MARK: - Actions
@@ -135,14 +142,81 @@ public final class ImageDetailsViewModel: ImageDetailsViewModelProtocol {
         Task {
             do {
                 let (data, _) = try await URLSession.shared.data(from: imageURL)
-                if let downloadedImage = UIImage(data: data) {
-                    completion(downloadedImage)
+                if let image = UIImage(data: data) {
+                    print("Fetched image successfully")
+                    completion(image)
                 } else {
                     completion(nil)
                 }
             } catch {
                 print("Failed to load the image: \(error.localizedDescription)")
                 completion(nil)
+            }
+        }
+    }
+    
+    private func fetchPictureDetails(pictureId: String) {
+        imageDetailsService.fetchPictureDetails(pictureId: pictureId) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let details):
+                let imageURL = URL(string: details.urls.regular)
+                print("Fetched details: \(details)")
+                let authorName = details.user.name
+                let location = [details.location?.city, details.location?.country]
+                    .compactMap { $0 }
+                    .joined(separator: ", ")
+                let cameraInfo = [details.exif?.make, details.exif?.model]
+                    .compactMap { $0 }
+                    .joined(separator: ", ")
+                let createdAt = details.createdAt
+                
+                // Update UI
+                Task { @MainActor in
+                    self.imageURL = imageURL ?? self.imageURL
+                    self.authorName = authorName
+                    self.location = location
+                    self.publishedDate = self.formatDate(createdAt)
+                    self.cameraInfo = cameraInfo
+                    self.fetchImage { image in
+                        DispatchQueue.main.async {
+                            self.image = image
+                            self.onDataFetched?()
+                        }
+                    }
+                }
+                
+            case .failure(let error):
+                print("Error fetching picture details:", error)
+            }
+        }
+    }
+    
+    // Returns short date format (3 days ago, 3 yeaars ago)
+    private func formatDate(_ date: Date) -> String {
+        let relativeFormatter = RelativeDateTimeFormatter()
+        relativeFormatter.unitsStyle = .full
+        return relativeFormatter.localizedString(for: date, relativeTo: Date())
+    }
+    
+    /// Method for saving images to the phone library.
+    public func saveImage(completion: @escaping (Result<Void, Error>) -> Void) {
+        imageDownloadService.downloadImage(from: imageURL) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fileURL):
+                    if let image = UIImage(contentsOfFile: fileURL.path) {
+                        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                        completion(.success(()))
+                    } else {
+                        self.error = .saveFailed
+                        completion(.failure(ImageDetailsError.saveFailed))
+                    }
+                case .failure:
+                    self.error = .downloadFailed
+                    completion(.failure(ImageDetailsError.downloadFailed))
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ import BrowseDomain
 import NetworkClient
 import LoginDomain
 import SignUpDomain
+import ImageDetailsDomain
 
 @MainActor
 final class DependencyContainer {
@@ -30,6 +31,9 @@ final class DependencyContainer {
     
     /// Shared instance of `BrowseService` used for listing images from API.
     lazy var browseService = BrowseService(networkClient: networkClient, config: config)
+    
+    lazy var imageDetailsService = ImageDetailsService(networkManager: networkClient, config: config)
+    lazy var imageDownloadService = ImageDownloadService()
     
     /// Shared instance of `UnsplashConfig` userd for configuration Unsplash API.
     lazy var config = UnsplashConfig(
