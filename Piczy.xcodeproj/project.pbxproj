@@ -18,6 +18,7 @@
 		42D971582DBEC5BA007C3136 /* SignUpPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971572DBEC5BA007C3136 /* SignUpPresentation */; };
 		42D971742DBECD2D007C3136 /* LoginPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 42D971732DBECD2D007C3136 /* LoginPresentation */; };
 		42D9718F2DCE26A6007C3136 /* CredentialsValidator in Frameworks */ = {isa = PBXBuildFile; productRef = 42D9718E2DCE26A6007C3136 /* CredentialsValidator */; };
+		42EE9B852E103117000E0EBD /* ImageDetailsDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 42EE9B842E103117000E0EBD /* ImageDetailsDomain */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		4221F1632DCF64180098023E /* SignUpDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SignUpDomain; sourceTree = "<group>"; };
 		4225EB982DE9F66900CC9C6A /* BrowseDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = BrowseDomain; sourceTree = "<group>"; };
 		4257BDC72DBE94B100955D45 /* WelcomePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WelcomePresentation; sourceTree = "<group>"; };
+		426436F92E102B4100D51983 /* ImageDetailsDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ImageDetailsDomain; sourceTree = "<group>"; };
 		429F22F32DB978FB0073AA3C /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
 		42A0D4882DD889BB00566812 /* ImageDetailsPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ImageDetailsPresentation; sourceTree = "<group>"; };
 		42A0D4D22DDBA29800566812 /* BrowsePresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = BrowsePresentation; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 				42D9713B2DBEA01F007C3136 /* WelcomePresentation in Frameworks */,
 				4221F1062DCE98F20098023E /* LoginDomain in Frameworks */,
 				4221F1652DCF81890098023E /* SignUpDomain in Frameworks */,
+				42EE9B852E103117000E0EBD /* ImageDetailsDomain in Frameworks */,
 				42D971392DBEA019007C3136 /* UIComponents in Frameworks */,
 				42A0D48A2DD88C2600566812 /* ImageDetailsPresentation in Frameworks */,
 				42D9718F2DCE26A6007C3136 /* CredentialsValidator in Frameworks */,
@@ -120,6 +123,7 @@
 		42A0D4872DD888FE00566812 /* ImageDetails */ = {
 			isa = PBXGroup;
 			children = (
+				426436F92E102B4100D51983 /* ImageDetailsDomain */,
 				42A0D4882DD889BB00566812 /* ImageDetailsPresentation */,
 			);
 			path = ImageDetails;
@@ -208,6 +212,7 @@
 				4221F1642DCF81890098023E /* SignUpDomain */,
 				42A0D4892DD88C2600566812 /* ImageDetailsPresentation */,
 				42A0D4D32DDBA30400566812 /* BrowsePresentation */,
+				42EE9B842E103117000E0EBD /* ImageDetailsDomain */,
 			);
 			productName = Piczy;
 			productReference = 42EFDA162DB1844B00BC9FD6 /* Piczy.app */;
@@ -524,6 +529,10 @@
 		42D9718E2DCE26A6007C3136 /* CredentialsValidator */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CredentialsValidator;
+		};
+		42EE9B842E103117000E0EBD /* ImageDetailsDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ImageDetailsDomain;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

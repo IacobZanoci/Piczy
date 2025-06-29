@@ -66,9 +66,8 @@ extension AuthenticationCoordinator {
     
     private func makeSignUpViewController() -> UIViewController {
         let viewModel = SignUpViewModel(
-            onSignUp: {
-                // go to Browse Presentation
-                print("SignUp succeeded")
+            onSignUp: { [weak self] in
+                self?.mainCoordinator?.startBrowseCoordinator()
             },
             credentialsValidator: dependencyContainer.credentialsValidator,
             signUpService: dependencyContainer.signUpService

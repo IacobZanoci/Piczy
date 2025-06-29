@@ -7,12 +7,14 @@
 
 import UIKit
 import DesignSystem
+import ImageDetailsDomain
 
 public final class ImageDetailsViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Dependencies
     
     private var viewModel: ImageDetailsViewModelProtocol
+    private let imageDownloadService: ImageDownloadServiceProtocol
     
     // MARK: - Views
     
@@ -27,8 +29,12 @@ public final class ImageDetailsViewController: UIViewController {
     
     // MARK: - Initializers
     
-    public init(viewModel: ImageDetailsViewModelProtocol) {
+    public init(
+        viewModel: ImageDetailsViewModelProtocol,
+        imageDownloadService: ImageDownloadServiceProtocol
+    ) {
         self.viewModel = viewModel
+        self.imageDownloadService = imageDownloadService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -42,6 +48,8 @@ public final class ImageDetailsViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationBar()
         setupLayout()
+        imageDetailsView.updateImage(nil)
+        imageDetailsView.setImageLongPressHandler(target: self, action: #selector(handleLongPressOnImage))
         bindViewModel()
     }
     
@@ -96,28 +104,33 @@ public final class ImageDetailsViewController: UIViewController {
         updateLikeButtonIcon()
     }
     
+    @objc private func handleLongPressOnImage(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        
+        let alert = UIAlertController(
+            title: "Save Image",
+            message: "Do you want to save this image?",
+            preferredStyle: .actionSheet
+        )
+        
+        alert.addAction(UIAlertAction(title: "Save",
+                                      style: .default,
+                                      handler: { _ in self.saveImage() })
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = view
+            popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+        
+        present(alert, animated: true)
+    }
+    
     // MARK: - Events
     
     private func bindViewModel() {
-        // get pictures
-        viewModel.fetchImage { [weak self] image in
-            self?.imageDetailsView.updateImage(image)
-        }
-        
-        // author name
-        imageDetailsView.updateAuthorName(viewModel.displayAuthorName)
-        
-        // location
-        imageDetailsView.updateLocation(viewModel.displayLocation)
-        
-        // published date
-        imageDetailsView.updatePublishedDate(viewModel.displayPublishedDate)
-        
-        // camera info
-        imageDetailsView.updateCameraInfo(viewModel.displayCameraInfo)
-        
-        // license info
-        imageDetailsView.updateLicenseInfo(viewModel.displayLicenseInfo)
         
         // Like button - react to viewModel state change
         viewModel.onLikedStateChanged = { [ weak self ] isLiked in
@@ -134,63 +147,39 @@ public final class ImageDetailsViewController: UIViewController {
         imageDetailsView.onImageTapped = { [weak self] in
             self?.toggleDetailsVisibility()
         }
-    }
-}
-
-// MARK: - Preview
-
-private final class ViewModelFixture: ImageDetailsViewModelProtocol {
-    var imageURL: URL = URL(string: "https://example.com/image.jpg")!
-    var authorName: String = ""
-    var location: String = ""
-    var publishedDate: String = "3 days"
-    var cameraInfo: String = ""
-    var licenseInfo: String = "Free to use under the Unsplash License"
-    
-    var displayAuthorName: String { "Iacob Zanoci" }
-    var displayLocation: String { "Cabo San Lucas, BCS, Mexico" }
-    var displayPublishedDate: NSAttributedString? {
-        guard !publishedDate.isEmpty else { return nil }
         
-        let regularFont = UIFont.Piczy.body
-        let boldFont = UIFont.Piczy.bodyBold
-        
-        let fullText = NSMutableAttributedString(string: "Published ", attributes: [.font: regularFont])
-        fullText.append(NSAttributedString(string: publishedDate, attributes: [.font: boldFont]))
-        fullText.append(NSAttributedString(string: " ago", attributes: [.font: regularFont]))
-        return fullText
-    }
-    var displayCameraInfo: String { "Canon, EOS RP" }
-    var displayLicenseInfo: NSAttributedString? {
-        guard !licenseInfo.isEmpty else { return nil }
-        
-        let fullText = licenseInfo.isEmpty ? "Unknown License" : licenseInfo
-        let attributedText = NSMutableAttributedString(
-            string: fullText,
-            attributes: [.font: UIFont.Piczy.body]
-        )
-        let underlineText = "Unsplash License"
-        
-        if let range = fullText.range(of: underlineText) {
-            let nsRange = NSRange(range, in: fullText)
-            attributedText.addAttributes([
-                .underlineStyle: NSUnderlineStyle.single.rawValue
-            ], range: nsRange)
+        viewModel.onDataFetched = { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.imageDetailsView.updateImage(self.viewModel.image)
+                self.imageDetailsView.updateAuthorName(self.viewModel.displayAuthorName)
+                self.imageDetailsView.updateLocation(self.viewModel.displayLocation)
+                self.imageDetailsView.updatePublishedDate(self.viewModel.displayPublishedDate)
+                self.imageDetailsView.updateCameraInfo(self.viewModel.displayCameraInfo)
+                self.imageDetailsView.updateLicenseInfo(self.viewModel.displayLicenseInfo)
+            }
+            
+            
         }
-        return attributedText
+        
     }
     
-    var onLikedStateChanged: ((Bool) -> Void)?
-    var isLiked: Bool = false
+    private func saveImage() {
+        viewModel.saveImage { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success:
+                self.showResultAlert(title: "Saved", message: "Image saved to your library.")
+            case .failure(let error):
+                self.showResultAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+    }
     
-    func fetchImage(completion: @escaping (UIImage?) -> Void) {}
-    func toggleLike() { isLiked.toggle() }
-}
-
-#Preview {
-    UINavigationController(
-        rootViewController: ImageDetailsViewController(
-            viewModel: ViewModelFixture()
-        )
-    )
+    private func showResultAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
 }

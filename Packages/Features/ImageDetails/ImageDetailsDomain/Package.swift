@@ -3,12 +3,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "BrowseDomain",
+    name: "ImageDetailsDomain",
     platforms: [.iOS(.v17)],
     products: [
         .library(
-            name: "BrowseDomain",
-            targets: ["BrowseDomain"]
+            name: "ImageDetailsDomain",
+            targets: ["ImageDetailsDomain"]
         ),
     ],
     dependencies: [
@@ -16,14 +16,17 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "BrowseDomain",
+            name: "ImageDetailsDomain",
             dependencies: [
                 .product(name: "NetworkClient", package: "NetworkClient")
             ]
         ),
         .testTarget(
-            name: "BrowseDomainTests",
-            dependencies: ["BrowseDomain"]
+            name: "ImageDetailsDomainTests",
+            dependencies: [
+                "ImageDetailsDomain",
+                "NetworkClient"
+            ]
         ),
     ]
 )

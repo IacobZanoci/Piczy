@@ -12,19 +12,26 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../../Core/DesignSystem")
+        .package(path: "../../Core/DesignSystem"),
+        .package(path: "../../Core/NetworkClient"),
+        .package(path: "../ImageDetailsDomain")
     ],
     targets: [
         .target(
             name: "ImageDetailsPresentation",
             dependencies: [
                 .product(name: "DesignSystem", package: "DesignSystem"),
-                .product(name: "UIComponents", package: "DesignSystem")
+                .product(name: "UIComponents", package: "DesignSystem"),
+                .product(name: "NetworkClient", package: "NetworkClient")
             ]
         ),
         .testTarget(
             name: "ImageDetailsPresentationTests",
-            dependencies: ["ImageDetailsPresentation"]
+            dependencies: [
+                "ImageDetailsPresentation",
+                "ImageDetailsDomain",
+                "NetworkClient"
+            ]
         )
     ]
 )

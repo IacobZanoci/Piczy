@@ -7,6 +7,7 @@
 
 import UIKit
 import DesignSystem
+import UIComponents
 
 final class ImageDetailsView: UIView {
     
@@ -17,12 +18,14 @@ final class ImageDetailsView: UIView {
     
     // MARK: - Views
     
+    private lazy var loadingIndicator = LoadingIndicatorView()
+    
     private lazy var imageView: UIImageView = {
-        let image = UIImage(named: "Picture", in: .module, with: .none)
-        let imageView = UIImageView(image: image)
+        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.image = nil
         return imageView
     }()
     
@@ -90,8 +93,20 @@ final class ImageDetailsView: UIView {
     
     // MARK: - Events
     
+    public func setImageLongPressHandler(target: Any?, action: Selector?) {
+        imageView.isUserInteractionEnabled = true
+        let longPressGesture = UILongPressGestureRecognizer(target: target, action: action)
+        imageView.addGestureRecognizer(longPressGesture)
+    }
+    
     func updateImage(_ image: UIImage?) {
-        imageView.image = image ?? UIImage(named: "Picture", in: .module, with: .none)
+        if let image = image {
+            imageView.image = image
+            loadingIndicator.stopAnimating()
+        } else {
+            imageView.image = nil
+            loadingIndicator.startAnimating()
+        }
     }
     
     func updateAuthorName(_ name: String) {
@@ -143,12 +158,16 @@ extension ImageDetailsView {
     
     private func setupPictureView() {
         addSubview(imageView)
+        addSubview(loadingIndicator)
         
         let constraints = [
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.topAnchor.constraint(equalTo: topAnchor, constant: 120),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -120)
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -120),
+            
+            loadingIndicator.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
